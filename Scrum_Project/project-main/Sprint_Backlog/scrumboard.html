@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scrumboard</title>
+<link rel="stylesheet" href="scrumboard.css">
+</head>
+<body>
+
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="white-frame">
+<div class="header-menu-container">
+<!-- <div class="previous-page">
+<a href = "#"><img src="../Product_Backlog/previouspage.png" width=30px height = 30px></a>
+</div> -->
+
+
+<div class="menu-bar">
+<button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+<div class="menu-items" id="menu-items">
+  <a id="productBacklog" style="cursor: pointer;">Product backlog</a>
+  <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+  <a id="teamManagement" style="cursor: pointer;">Team management</a>
+  <a id="profile" style="cursor: pointer;">Profile</a>
+  <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+  <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+</div>
+</div>
+
+
+<div class="button-container">
+<a id="add-button" class="add-button">Create new sprint</a>
+</div>
+
+
+<header>
+<h1>Scrumboard</h1>
+</header>
+</div>
+
+
+<div class="dark-blue-frame">
+<div class ="vertical-scroll">
+
+
+
+</div>
+</div>
+<div class="button-container">
+    <div id="delete-button" class="delete-button">Delete</div>        
+  </div>
+
+
+</div>
+</div>
+
+
+
+
+
+
+<script type="module">
+//----------------------------------------------DISPLAYING SPRINT--------------------------------------------------------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child ,update} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+document.addEventListener("DOMContentLoaded",function(){
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+    const urlParams = new URLSearchParams(window.location.search)
+    const username = urlParams.get("username")
+    document.getElementById("add-button").addEventListener("click",function(){
+      window.location.href= `createnewsprint.html?username=${username}`
+    })
+    document.getElementById("productBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+    const newsprintRef = ref(db, "newsprint/");
+
+    // data array
+    const sprintArray = [];
+    const sprintList = document.querySelector(".vertical-scroll");
+    console.log(sprintList.innerHTML)
+    // Retrieve data from the database
+    get(newsprintRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                sprintArray.push(childData)
+            });
+            sprintList.innerHTML = "";
+            sprintArray.forEach((sprintData, index) => {
+                const cardView = document.createElement("div");
+                cardView.classList.add("cardview");
+                cardView.id = `sprint${index + 1}`;
+
+                const anchor = document.createElement("div");
+                anchor.style.cursor = "pointer";
+                anchor.addEventListener("click",function(){
+                  window.location.href = `sprint.html?username=${username}&sprintId=${sprintData.sprint}`;
+                })
+
+                const sprintName = document.createElement("div");
+                sprintName.classList.add("sprint-name");
+                sprintName.textContent = sprintData.sprint;
+
+                const startDate = document.createElement("div");
+                startDate.classList.add("startdate");
+                startDate.textContent = `Start date: ${sprintData.startDate}`;
+
+                const endDate = document.createElement("div");
+                endDate.classList.add("enddate");
+                endDate.textContent = `End date: ${sprintData.endDate}`;
+                
+                const status = document.createElement("div");
+                status.classList.add("status");
+                const currentDate = new Date()
+                const startDate2 = new Date(sprintData.startDate)
+                const endDate2 = new Date(sprintData.endDate)
+                console.log(currentDate <= startDate2)
+                status.textContent = `Status: ${sprintData.selectedStatus}`;
+                if (currentDate < startDate2){
+                  status.textContent = `Status: Not Started`;
+                  update(ref(db,`newsprint/${sprintData.sprint}`),{
+                    selectedStatus: "Not Started"
+                  })
+                }
+                else if (startDate2 <= currentDate && currentDate <= endDate2){
+                  status.textContent = `Status: Active`;
+                  update(ref(db,`newsprint/${sprintData.sprint}`),{
+                    selectedStatus: "Active"
+                  })
+                }
+                else if (startDate2 <= currentDate && currentDate > endDate2){
+                  status.textContent = `Status: Completed`;
+                  update(ref(db,`newsprint/${sprintData.sprint}`),{
+                    selectedStatus: "Completed"
+                  })
+                }
+                const deletecheckbox = document.createElement("label")
+                deletecheckbox.classList.add("custom-checkbox")
+                deletecheckbox.classList.add("hidden-checkbox")
+                const checkboxinput = document.createElement("input")
+                checkboxinput.classList.add("delete-checkbox")
+                checkboxinput.type = "checkbox"
+                const checkmark = document.createElement("span")
+                checkmark.classList.add("checkmark")
+                deletecheckbox.appendChild(checkboxinput)
+                deletecheckbox.appendChild(checkmark)
+
+                cardView.appendChild(sprintName);
+                cardView.appendChild(startDate);
+                cardView.appendChild(endDate);
+                cardView.appendChild(status);
+                cardView.appendChild(deletecheckbox);
+
+                anchor.appendChild(cardView);
+                sprintList.appendChild(anchor);
+            })
+        } else {
+            console.log("No data available");
+        }
+    }).catch((error) => {
+        console.error("Error getting data:", error);
+    });
+})
+</script>
+
+
+<script type="module">
+// -----------------------------------------------DELETE SPRINT-----------------------------------------------------------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getDatabase, ref, set, get, child, query, orderByChild,remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const firebaseConfig2 = {
+        apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+        authDomain: "project-2782373696466964042.firebaseapp.com",
+        databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "project-2782373696466964042",
+        storageBucket: "project-2782373696466964042.appspot.com",
+        messagingSenderId: "971400388443",
+        appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+    };
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteButton = document.getElementById("delete-button");
+    var display = false;
+    const app = initializeApp(firebaseConfig2);
+
+    const db = getDatabase(app);
+
+    deleteButton.addEventListener("click", function (e) {
+      const checkboxes = document.querySelectorAll(".custom-checkbox");
+      e.preventDefault(); // Prevent the default behavior of the anchor tag
+      if (display==false){
+      checkboxes.forEach(function (checkbox) {
+        checkbox.style.display = "block"; // Set display to "block" to show the checkboxes
+      });
+    display = true  
+    }
+      else {
+        checkboxes.forEach(function (checkbox) {
+          checkbox.style.display = "none"
+      })
+    display = false
+    }
+
+      checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("click", function (e) {
+          e.stopPropagation(); // Prevent card click event from firing
+  
+          if (checkbox.querySelector("input[type='checkbox']").checked) {
+
+            const taskCard = checkbox.closest(".cardview");
+
+            if (taskCard) {
+                const sprintName = taskCard.querySelector(".sprint-name").textContent;
+                const taskToRemove = ref(db, `newsprint/${sprintName}`);
+                remove(taskToRemove)
+                taskCard.remove()
+            }
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+    } else {
+      body.classList.remove("color-blind-friendly");
+    }
+  });
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

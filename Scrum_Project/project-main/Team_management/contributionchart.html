@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit member</title>
+  <link rel="stylesheet" href="contributionchart.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="white-frame">
+    <div class="header-menu-container">
+            
+        <div class="menu-bar">
+            <button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+            <div class="menu-items" id="menu-items">
+                <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+                <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+                <a id="teamManagement" style="cursor: pointer;">Team management</a>
+                <a id="profile" style="cursor: pointer;">Profile</a>
+                <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+                <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="light-yellow-frame">
+        <div class="white-new-frame">
+            <h2 id="timeSpentHeader">Time spent of "" for the sprint "" on each day</h2>
+            <canvas id="lineChart1"></canvas>
+        </div>
+        <div class="assignee">
+            <span class="text">View time spent for member: </span>
+            <select name="team-member" id="AssigneeList">
+              <option value="" selected disabled>Select an option</option>
+              <option value="All member">All member</option>
+              </select>
+        </div>
+        <div class="sprintList">
+            <span class="text">View time spent for sprint: </span>
+            <select name="sprintList" id="sprintList">
+                <option value="" selected disabled>Select an option</option>
+              </select>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getDatabase, ref, set, get, child,update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    document.addEventListener("DOMContentLoaded", function() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+const app = initializeApp(firebaseConfig);
+const urlParams = new URLSearchParams(window.location.search)
+const db = getDatabase(app);
+    const username = urlParams.get("username")
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the members' profile")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+    get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["identity"] != "admin"){
+        alert("You have no access to view Team_Management")
+        window.location.href = `../Product_Backlog/prodBacklog.html?username=${username}`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+        
+      const assigneeList = document.getElementById("AssigneeList");
+      const timeSpentHeader = document.getElementById("timeSpentHeader");
+      const sprintList = document.getElementById("sprintList");
+      get(ref(db,`newsprint`)).then((allSprint)=>{
+        if (allSprint.exists()) {
+            const allSprintVal = allSprint.val()
+            const allSprintName = Object.keys(allSprintVal)
+            allSprintName.forEach((sprint)=>{
+                let newOption = document.createElement('option');
+                newOption.value = sprint
+                newOption.textContent = sprint
+                sprintList.appendChild(newOption)
+            })
+        }
+      })
+      get(ref(db,`addMember`)).then((allMember)=>{
+        if (allMember.exists()) {
+            const allMemberVal = allMember.val()
+            const allMemberName = Object.keys(allMemberVal)
+            console.log(allMemberName)
+            allMemberName.forEach((member)=>{
+                let newOption = document.createElement('option');
+                newOption.value = member
+                newOption.textContent = member
+                assigneeList.appendChild(newOption)
+            })
+        }
+      })
+      const color = ['red','blue','green','yellow','RGB(53,76,112)','RGB(0, 0, 0)',
+                            'RGB(66, 60, 60)','RGB(71, 33, 33)','RGB(211, 242, 241)']
+      const colorBlindness = ['#9b7a26','#204f7f','#85682c','#fdf5eb','#404c6d','#000000',
+                              '#453e3f', '#372e25','#fae5f4']
+      const toggleButton = document.getElementById("toggleButton");
+      assigneeList.addEventListener("change", function() {
+        const assignee = assigneeList.value;
+        const sprint = sprintList.value;
+        timeSpentHeader.textContent = `Time spent of ${assignee} for ${sprint} on each day`;
+        toggleButton.addEventListener("change", function(){
+          if(toggleButton.checked){
+            generateChartData(colorBlindness) 
+          }else{
+            generateChartData(color)
+          }
+        })
+        if(toggleButton.checked){
+            generateChartData(colorBlindness) 
+          }else{
+            generateChartData(color)
+          }
+      });
+      sprintList.addEventListener("change", function() {
+        const assignee = assigneeList.value;
+        const sprint = sprintList.value;
+        timeSpentHeader.textContent = `Time spent of ${assignee} for ${sprint} on each day`;
+        toggleButton.addEventListener("change", function(){
+          if(toggleButton.checked){
+            generateChartData(colorBlindness) 
+          }else{
+            generateChartData(color)
+          }
+        })
+        if(toggleButton.checked){
+            generateChartData(colorBlindness) 
+          }else{
+            generateChartData(color)
+          }
+      });
+function getIntervalsBetweenDates(startD, endD) {
+  const intervals = [];
+  let currentDate = new Date(startD);
+  let endDate = new Date(endD)
+
+  while (currentDate <= endDate) {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1; // Month is zero-based, so add 1
+    const day = currentDate.getDate();
+    
+    intervals.push(`${year}-${month}-${day}`);
+    
+    currentDate.setDate(currentDate.getDate() + 1); // Increment by one day
+  }
+
+  return intervals;
+}
+    function generateChartData(color){
+        const datasets = []
+      get(ref(db,`newsprint/${sprintList.value}`)).then((sprint)=>{
+        if (sprint.exists()){
+            // const toggleButton = document.getElementById("toggleButton");
+            const startDate = sprint.val()["startDate"]
+            const endDate = sprint.val()["endDate"]
+            const interval = getIntervalsBetweenDates(startDate,endDate)
+            // const color = ['red','blue','green','yellow','RGB(53,76,112)','RGB(0, 0, 0)',
+            //                 'RGB(66, 60, 60)','RGB(71, 33, 33)','RGB(211, 242, 241)']
+            // const colorBlindness = ['#9b7a26','#204f7f','#85682c','#fdf5eb','#404c6d','#000000',
+            //                         '#453e3f', '#372e25','#fae5f4']
+            if (assigneeList.value == "All member"){
+                get(ref(db,`newsprint/${sprintList.value}/taskAssignees`)).then((allMember)=>{
+                    if (allMember.exists()){
+                        console.log(allMember.val())
+                        allMember.forEach((member)=>{
+                            const assignee = member.val()
+                            const data = []
+                            if (assignee.logTimeSpent != null){
+                            const dateList = Object.keys(assignee.logTimeSpent)
+                            const timeSpentList = Object.values(assignee.logTimeSpent)
+                            interval.forEach((date)=>{
+                                if (dateList.includes(date)){
+                                    data.push(parseFloat(timeSpentList[dateList.indexOf(date)]))
+                                }
+                                else{
+                                    data.push(0)
+                                }
+                            })
+                          }
+                          else {
+                            interval.forEach((date)=>{
+                              data.push(0)
+                            })
+                          }
+                                datasets.push({label:`${assignee.name}`,data:data,borderColor:color[datasets.length],
+                            borderWidth:2,fill:false,tension:0})
+                            generateChart(interval,datasets)
+                        })
+                    }
+                    else {
+                      timeSpentHeader.textContent = `The sprint ${sprintList.value} has not been started by all the members`
+                      const data = []
+                        interval.forEach((date)=>{
+                            data.push(0)
+                        })
+                        datasets.push({label:assigneeList.value,data:data,borderColor:color[datasets.length],
+                            borderWidth:2,fill:false,tension:0})
+                            generateChart(interval,datasets)
+                    }
+                })
+            }
+            else {
+                get(ref(db,`newsprint/${sprintList.value}/taskAssignees/${assigneeList.value}`)).then((assignee)=>{
+                    if (assignee.exists()){
+                        const assigneeData = assignee.val()
+                        console.log(assigneeData)
+                        const data = []
+                        if (assigneeData.logTimeSpent != null){
+                            const dateList = Object.keys(assigneeData.logTimeSpent)
+                            const timeSpentList = Object.values(assigneeData.logTimeSpent)
+                            interval.forEach((date)=>{
+                                if (dateList.includes(date)){
+                                    data.push(parseFloat(timeSpentList[dateList.indexOf(date)]))
+                                }
+                                else{
+                                    data.push(0)
+                                }
+                            })
+                          }
+                          else {
+                            interval.forEach((date)=>{
+                              data.push(0)
+                            })
+                          }
+                            datasets.push({label:assigneeData.name,data:data,borderColor:color[datasets.length],
+                            borderWidth:2,fill:false,tension:0})
+                            generateChart(interval,datasets)
+                    }
+                    else {
+                        const data = []
+                        interval.forEach((date)=>{
+                            data.push(0)
+                        })
+                        datasets.push({label:assigneeList.value,data:data,borderColor:color[datasets.length],
+                            borderWidth:2,fill:false,tension:0})
+                            generateChart(interval,datasets)
+                    }
+                })
+            }
+        }
+      })
+      ;
+}
+
+    });
+    function generateChart(label,dataset){
+    const datasets = []
+    dataset.forEach((datas)=>{
+        datasets.push(datas)
+    })
+    var ctx = document.getElementById('lineChart1').getContext('2d');
+      var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+      labels: label,
+      datasets: datasets
+    }
+        ,
+        options: {
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date' // Set the X-axis label
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time Spent on each day' // Set the Y-axis label
+                    }
+                }]
+            }
+        }
+      })
+    }
+</script>
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+    } else {
+      body.classList.remove("color-blind-friendly");
+    }
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+---
+title: "Assignment3"
+format: html
+editor: visual
+execute: 
+  warning: false
+  message: false
+---
+
+# **ETW2001 Assignment Semester 1, 2024**
+
+### **Evaluating Community Health Services and Health Quality to Enhance Patient Outcomes and Promote Well-being**
+
+**Group 33 Members:**
+
+1.  **Richelle Yong Jia Wei 33203547**
+
+2.  **Choo Bi Shan 33053758**
+
+3.  **Seah Pui Hean 32689497**
+
+4.  **Alyssa Lok Sook Yin 33075689**
+
+5.  **Lau Jia Xuan 32203438**
+
+## **Task 1**
+
+**Dataset found:** <https://www.kaggle.com/datasets/ziya07/community-health-evaluation-dataset>
+
+The Community Health Evaluation dataset chosen focuses on various aspects of community health including healthcare service type, patient satisfaction, quality of life scores and other health indicators. By analyzing this data, we can gain valuable insights into how different health services impact patients' experiences and overall well-being.
+
+**Sustainable Development Goal 3: Good Health and Well-Being**
+
+This evaluation aligns closely with Sustainable Development Goal 3 (SDG 3), which aims to ensure healthy lives and promote well-being for all individuals. The insights gained will help enhance service quality, patient satisfaction and improve health outcomes, contributing to the achievement of SDG 3.
+
+### **Problem Statement 1:**
+
+**Unequal Access to Preventive Health Services Across Socioeconomic Groups**
+
+Despite advancements in healthcare availability, significant disparities persist in access to preventive healthcare services across different socioeconomic groups. These disparities can influence overall health outcomes and quality of life, necessitating a targeted analysis to understand and address these inequalities.
+
+This problem statement focuses on assessing the frequency and quality of access to preventive healthcare services based on varying levels of socioeconomic status (SES). By analysing data points such as SES, service type, visit frequency, patient satisfaction, and quality of life scores, this study aims to identify patterns and gaps in service utilisation.
+
+The goal is to determine if individuals from lower SES brackets are less likely to access preventive services and to understand how this impacts their health satisfaction and quality of life. Stakeholders benefiting from this analysis include healthcare policymakers, government health departments, and public health organisations. They can use these insights to allocate resources more effectively and design more programs that enhance access to preventive healthcare services to promote equitable access in health services.
+
+### **Problem Statement 2:**
+
+**Low Physical Activity Levels Among Certain Demographic Groups**
+
+Despite the known benefits of physical activity, specific demographic groups, particularly older adults and certain genders, often show low engagement levels. This can lead to mobility-related health issues and chronic diseases. Therefore, there is a need to investigate how demographic factors such as age and gender affect physical activity levels, measured through step frequency, stride length, and EMG activity.
+
+This analysis aims to identify high-risk groups with lower physical activity levels, enabling the development of targeted programs to improve mobility and health outcomes. Stakeholders benefiting from this analysis include fitness centres, healthcare providers, rehabilitation specialists, and public health agencies, who can utilise these insights to promote healthier lifestyles.
+
+### **Problem Statement 3:**
+
+**Evaluating Patient Satisfaction Across Health Service Types**
+
+Understanding patient satisfaction is crucial for improving the quality of healthcare. By comparing patient satisfaction and quality of life across different health service types we can identify which services tend to have lower satisfaction scores and explore the reasons behind these trends.
+
+This goal is to gain a thorough understanding of the healthcare services that fall short in patient satisfaction. This insight will lead to targeted recommendations for improving service delivery, ultimately enhancing patient satisfaction and quality of life. Healthcare facilities and service providers can utilise these findings to refine their strategies and more effectively address patient needs\
+
+## **Task 2**
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+setwd("D:\\ETW2001\\assignment3")
+```
+
+```{r}
+data <- read.csv("community_health_evaluation_dataset.csv", na.strings = c("", "NA"))
+
+head(data, 10)
+```
+
+**Data Cleaning and Manipulation**\
+Several preprocessing steps were conducted to ensure that the dataset was clean and ready for analysis. This process involved both data cleaning and data manipulation techniques to guarantee accuracy and reliability.
+
+```{r}
+colSums(is.na(data))
+```
+
+First, we checked for missing values in each column using the colSums(is.na(data)) function, which revealed that there were no missing values in any part of the dataset. Ensuring the dataset is free from missing data is crucial, as it prevents inaccuracies during analysis and ensures valid results.
+
+```{r}
+str(data)
+```
+
+Upon further inspection using the str(data) function, it was found that the dataset consists of 347 observations and 12 variables. These variables represent different aspects of the participants and their health data. For instance, Participant.ID is an integer column representing each participant's unique identifier, while Age captures the age of the participants as integers. Gender is stored as character values, indicating the sex of each participant, and SES reflects the participants' socioeconomic status as integers, from a scale of 1 to 4.
+
+After confirming the absence of missing data, the dataset was deemed suitable for further analysis. Proper data cleaning is essential to avoid skewed or misleading results, which is why it is important to ensure that all variables are properly formatted and free of errors.
+
+```{r}
+data$SES <- as.factor(data$SES)
+data$Gender <- as.factor(data$Gender)
+data$Service.Type <- as.factor(data$Service.Type)
+data$Visit.Frequency <- as.factor(data$Visit.Frequency)
+data$EMG.Activity <- as.factor(data$EMG.Activity)
+
+```
+
+For data manipulation, we converted categorical variables such as SES, Gender, Service Type, Visit Frequency, and EMG Activity to factors. This step is crucial when we summarize or visualize the data later, based on these groupings. When dealing with categories, treating these variables as factors allows R to group by each level of the factor.
+
+\
+**Problem statement 1**
+
+SES is a category so when we plot the bar chart to visualize the frequency of preventive services by SES, we can ensure it is aggregated and the frequency of visits is counted separately for each SES level.  Visit Frequency (e.g., Weekly, Monthly, Yearly) must also be treated as a factor so that the bar chart displays the visit frequencies in a logical sequence.
+
+Similarly, to visualize the patient satisfaction by SES, we will plot a box plot comparing distributions across SES groups. Treating SES as a factor allows R to plot separate box plots for each SES category, enabling clear and accurate comparisons.
+
+To visualize the quality of life by SES and Service Type using a heatmap, we need to ensure both variables are treated as factors. This way, R will correctly aggregate the data for each SES and Service Type combination in the heatmap.
+
+\
+**Problem Statement 2**
+
+To visualize the average EMG activity by gender relationship, we need to convert EMG activity and gender to factors. Converting EMG activity is necessary for grouping the data correctly in the bar chart, allowing us to visualize the average EMG activity across different age groups and gender.
+
+In addition, we need to convert gender to factor so we can visualize the relationship between the gender and the step frequency using a box plot later.
+
+\
+**Problem Statement 3**
+
+To visualize the relationship between different service types and the average quality of life scores with socioeconomic status, we need to treat service type as factor. Similarly, to compare the average patient satisfaction in different service types, it’s necessary to convert service type to factor.
+
+\
+**Descriptive Analysis**
+
+**Problem statement 1**
+
+```{r}
+summary(data)
+```
+
+The summary statistics of the dataset provide valuable insights into the demographic and health-related characteristics of the participants. Firstly, the age of participants range from 18 to 69, with a mean of  43.37 years. The median age is 43, indicating a balanced distribution of ages within the dataset. In addition, there are 185 female participants and 163 male participants. The SES is categorized on a scale of 1 to 4. SES values suggest that participants generally belong to the higher end of the socioeconomic spectrum, with 107 participants belonging to category 1.
+
+In terms of healthcare services, the dataset indicates 117 consultations, 119 preventive service visits, and 111 rehabilitation visits. The predominant type of service accessed is preventive care, reflecting a proactive approach to health management among participants. Most participants utilize healthcare services on a monthly basis (111 visits), followed closely by yearly visits (116 visits). Weekly visits are reported at 120, suggesting a significant portion of the population engages in frequent healthcare access.
+
+The summary statistics table also shows that the average step frequency is reported at 80.12 step/min, with a minimum of 60 and maximum of 99 steps/min. This indicates a generally active population, with a median step frequency of 81 steps/min, which is encouraging for public health. The average stride length is recorded to be 0.7515 meters, with a range from 0.5 to 1. 
+
+In the context of patient satisfaction and quality of life, the average patient satisfaction score is 5.213, with a minimum score of 1 and a maximum of 10. The median satisfaction score is 5, highlighting a need for improvement in service delivery, as a substantial number of participants report lower satisfaction levels. The quality of life scores range from 50 to 99, with a mean of 74.2 and a median of 74. This suggests that while most participants perceive their quality of life positively, there are still significant portions that may be experiencing lower quality of life outcomes.
+
+```{r}
+# Summarize visit frequency by SES
+visit_summary <- data %>%
+  group_by(SES, Visit.Frequency) %>%
+  summarise(total_visits = n()) %>%
+  ungroup()
+
+# Print summary statistics
+print(visit_summary)
+
+```
+
+The table shows the total frequency of visits to healthcare facilities categorized by socioeconomic status (SES) and visit frequency (Weekly, Monthly, Yearly). The total visits vary across different SES groups and visiting frequency.
+
+```{r}
+# Summarize total visits by SES (summing across all visit frequencies)
+visit_summary_total <- data %>%
+  group_by(SES) %>%
+  summarise(total_visits = n()) %>%
+  ungroup()
+
+# Print the summary
+print(visit_summary_total)
+```
+
+It's observed that the SES 1 group has the highest total number of visits, with 107 visits. This suggests that individuals in the higher socioeconomic brackets are more likely to access healthcare services more frequently. In contrast, the SES 4 group has the fewest visits with 74 total visits, highlighting a significant gap in healthcare utilization. These results emphasize disparities in access to preventive healthcare services, where individuals in lower SES categories may face barriers that prevent regular service use. This calls for targeted policies to improve healthcare access for these groups.\
+
+**Problem Statement 2**
+
+```{r}
+# Summarize average step frequency by age and gender, then order by avg_step_freq in descending order
+activity_summary <- data %>%
+  group_by(Age, Gender) %>%
+  summarise(avg_step_freq = mean(Step.Frequency..steps.min., na.rm = TRUE)) %>%
+  arrange(desc(avg_step_freq)) %>%
+  ungroup()
+
+# Print summary statistics
+head(activity_summary)
+tail(activity_summary)
+```
+
+We analyzed the average step frequency by age and gender. Ordering the results in descending order allows quick identification of which age and gender groups have the highest average step frequency. For example, by using head(), we can observe that the 27 year old female participant exhibits the highest average step frequency of 98 steps/min. Besides, by using tail(), we can observe the bottom six participants with the lowest average step frequency, sorted in descending order by age and gender. For instance, the 51 year old male  participant records the lowest average step frequency.
+
+Overall, the data underscores the importance of analyzing the average step frequency across various age groups highlights potential trends in physical activity that could be targeted for interventions aimed at increasing activity levels, particularly among older adults who may be at risk for lower activity.\
+
+**Problem Statement 3**
+
+```{r}
+library(dplyr)
+
+summary_stats <- data %>%
+  group_by(Service.Type) %>%
+  summarise(
+    Mean_Satisfaction = mean(Patient.Satisfaction..1.10., na.rm = TRUE),
+    Median_Satisfaction = median(Patient.Satisfaction..1.10., na.rm = TRUE),
+    SD_Satisfaction = sd(Patient.Satisfaction..1.10., na.rm = TRUE),
+    Min_Satisfaction = min(Patient.Satisfaction..1.10., na.rm = TRUE),
+    Max_Satisfaction = max(Patient.Satisfaction..1.10., na.rm = TRUE)
+  )
+print(summary_stats)
+```
+
+We computed the summary statistics using mean, median, standard deviation, and range of patient satisfaction scores for each health service type. This service type has the highest average satisfaction score among the three, indicating that patients generally feel more satisfied with the consultation services they received. In contrast, rehab services have the lowest average satisfaction score (4.9). This may indicate that patients using rehabilitation services are less satisfied compared to those using consultation or preventive services. This could highlight a potential area for targeted improvements. Moreover, all service types show a minimum satisfaction score of 1 and a maximum score of 10, which indicates a wide range of patient experiences. Satisfaction ratings as low as 1 suggests that there are critical issues or unmet expectations that need to be addressed, across all categories. In addition, a median of 5 implies that while there are some highly satisfied patients, a significant portion may not feel that their expectations were met.
+
+## **Task 3**
+
+### **Problem Statement 1**
+
+```{r}
+# Plot boxplot for Patient Satisfaction Scores across SES for Preventive Services
+# Filters the dataset to include only rows where Service Type is "Preventive"
+
+ggplot(data %>% filter(Service.Type == "Preventive"), aes(x = SES, y = Patient.Satisfaction..1.10., fill = SES)) +
+  geom_boxplot() +
+  labs(title = "Patient Satisfaction Scores Across SES for Preventive Services", x = "Socioeconomic Status (SES)", y = "Patient Satisfaction Scores (1-10)") +
+  theme_minimal()+
+  theme(legend.position = "none")
+```
+
+The box plot above shows the difference in patient satisfaction between different socioeconomic statuses. There are quite different satisfactions in all socioeconomic statuses because the box plots for each are comparatively tall. Looking at the skewness of the dataset, it can be seen that the distribution of Group 3 is positively skewed while the rest of the groups are negatively skewed. It indicates that the satisfaction of Group 3 tends to be more positive than the other groups. Based on the median of each box plot, Group 2 and Group 3 have the same satisfaction which is 5. The size of the interquartile range for Group 2 is the smallest among all groups which indicates that the satisfaction scores are more consistent compared to other groups that are more widely spread and indicates it has more variability.
+
+Based on the results, we can conclude that the health organizations or the health department of the government can see how to improve the satisfaction of the patients in each socioeconomic status group. Since there are many inconsistencies in the patient satisfaction scores, it can be said that there are disparities in access to preventive services as the higher group like Group 3 might receive more reliable care as it has more positive scores compared to the other groups. For Group 1, the median score is higher which indicates that they are not satisfied with the current services that were provided which the stakeholders should be aware of and provide better services for them. They have equal satisfaction, the stakeholders could give equal access to the preventive services.
+
+```{r}
+# Plot boxplot for Quality of Life Scores across SES for Preventive Services
+# Filters the dataset to include only rows where Service Type is "Preventive"
+
+ggplot(data %>% filter(Service.Type == "Preventive"), aes(x = SES, y = `Quality.of.Life.Score`, fill = SES)) +
+ geom_boxplot() +
+  labs(title = "Quality of Life Scores Across SES for Preventive Services", 
+       x = "Socioeconomic Status (SES)", 
+       y = "Quality of Life Score") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+This is another box plot that compares the difference in quality of life score between the socioeconomic status. The interquartile ranges for Group 2 and Group 4 are smaller than the other two groups which indicates that the quality of life scores are more consistent while the other two groups have more variability. Group 1 and Group 3 have a more symmetric distribution of quality of life scores because the medians are in the middle of the box. While Group 2 and Group 3 have a more negatively skewed distribution which indicates that the quality of life score is lower for preventive services.
+
+This tells us that there might be unequal access to preventive scores that is affecting their quality of life scores because there are inconsistencies in each socioeconomic status group. Like Group 4, the quality of life score is negatively skewed which means that the service they received might not meet their expectations which causes a lower quality of life scores. This allows the stakeholders to understand how it is affecting people's lives and is able to provide more quality services for those status groups to enhance their quality of life. 
+
+```{r}
+# Calculate the percentage of participants using Preventive Services across SES groups
+# Groups the dataset by SES to calculate statistics for each SES group
+# Summarises the data by calculating:
+# Total_Participants: Total number of participants in each SES group
+# Preventive_Participants: Number of participants in each SES group who use Preventive Services
+
+df_percentage <- data %>%
+  group_by(SES) %>%
+  summarise(Total_Participants = n(),
+            Preventive_Participants = sum(`Service.Type` == "Preventive")) %>%
+  mutate(Percentage = (Preventive_Participants / Total_Participants) * 100)
+
+df_percentage
+```
+
+The above code calculates the percentage of participants from each Socioeconomic Status (SES) group who are using Preventive Services.
+
+```{r}
+# Plot the percentage of SES participants using Preventive Services
+# Uses the 'df_percentage' dataframe created earlier
+
+ggplot(df_percentage, aes(x = SES, y = Percentage, fill = as.factor(SES))) +
+  geom_bar(stat = "identity") +
+  labs(title = "Percentage of SES Participants Using Preventive Services", 
+       x = "Socioeconomic Status (SES)", 
+       y = "Percentage of Participants Using Preventive Services") +
+  theme_minimal()+
+  theme(legend.position = "none")
+```
+
+The bar graph above presents the number of participants for preventive service for each socioeconomic status. The participants are the most for Group 2 while the participants are the least for Group 4 which means that there are fewer patients in Group 4 to visit for preventive service. Similarly to Group 1, it is also the second lowest status group that visits preventive services.
+
+The frequency of visits is lower when socioeconomic status is higher as it might be due to the lower socioeconomic status groups being more reliant on preventive services and needing to visit more often because they have lesser access to similar services while the higher group might have access to better facilities and services which prevent them from getting more health issues that require them to go for preventive services. It might also be due to not having equal access for the lower status group which causes them not to get the chance to visit. The distribution of the participants indicates there is unequal access to preventive services which can tell the stakeholders to consider changing the strategies of distributing it to different groups of socioeconomic status as it looks like the lower socioeconomic status needs the preventive services more.
+
+### **Problem Statement 2**
+
+```{r}
+# Create a bar plot to compare the number of participants by EMG Activity and Gender
+# Maps the EMG.Activity levels ("Low", "Moderate", "High")
+
+ggplot(data, aes(x = factor(EMG.Activity, levels = c("Low", "Moderate", "High")), fill = Gender)) +
+  geom_bar(position = "dodge") +
+  scale_fill_discrete(labels = c("F" = "Female", "M" = "Male")) +  # Correctly change F to Female and M to Male
+  labs(title = "Comparison of Participants by EMG Activity and Gender", 
+       x = "EMG Activity", 
+       y = "Number of Participants", 
+       fill = "Gender") +
+  theme_minimal()
+```
+
+The bar graph is the visual representation of the comparison between participants based on EMG Activity and gender group. There is an obvious pattern where the male participants increase when the EMG activity is higher compared to the female participants. The female participants are more likely to be in moderate EMG activity and fewer female participants in high EMG activity. It indicates that males tend to have higher EMG amplitudes because of their greater muscle mass and strength while female participants focus on consistent muscle activity. There are more participants in the moderate and low EMG activity.
+
+Therefore, it tells the fitness centres or healthcare organizations to take note of the difference in EMG activity between females and males so that they can target different kinds of muscle activity for each gender because it has been said that males are more focused on the high-intensity activities that result in the EMG activity to be high in this case. They should also design a suitable low to moderate activity for females as it can be seen that most of the female participants have moderate EMG Activity. Knowing the patterns of EMG activity will benefit them in providing the correct and efficient services for them.
+
+```{r}
+# Create a boxplot to visualize step frequency by gender
+ggplot(data, aes(x = Gender, y = Step.Frequency..steps.min., fill = Gender)) +
+   geom_boxplot() +
+  scale_x_discrete(labels = c("F" = "Female", "M" = "Male")) +  # Rename gender labels
+  labs(title = "Step Frequency by Gender", 
+       x = "Gender", 
+       y = "Step Frequency (steps/min)") +
+  theme_minimal()+
+  theme(legend.position = "none")
+```
+
+The box plot shows the relationship between the gender and the step frequency, it indicates that the male participants tend to have more steps compared to the female participants because how the box of the male participants is higher than the female box. The size of the box for males is also smaller than the female participants which means that the step variability is more consistent compared to females. Both of the box plots are more likely to be normal distributions in the step frequency.
+
+The male participants have more step frequency compared to the female participants based on the results above. This relates to the problem statement which states that different genders can have different physical activities and this box plot, tells us that males tend to have more steps than females. This benefits the stakeholders like fitness coaches or healthcare providers to focus on different physical activities for each gender.
+
+### Problem Statement 3
+
+```{r}
+quality_of_life_pivot <- data %>%
+  group_by(SES, Service.Type) %>% # Group the data by SES and Service.Type
+  summarise(mean_quality_of_life = mean(Quality.of.Life.Score, na.rm = TRUE), .groups = "drop") # Summarise the mean Quality of Life Score for each group
+
+head(quality_of_life_pivot, 10)
+```
+
+The code above calculates the mean Quality of Life Score for each combination of Socioeconomic Status (SES) and Service Type.
+
+```{r}
+# Create a heatmap of average Quality of Life Scores by SES and Service Type
+ggplot(quality_of_life_pivot, aes(x = Service.Type, y = SES, fill = mean_quality_of_life)) +
+  geom_tile() +
+  scale_fill_gradient(low = "lightyellow", high = "red", name = "Quality of Life Score") +
+  labs(title = "Average Quality of Life Scores by SES and Service Type", 
+       x = "Service Type", 
+       y = "Socioeconomic Status (SES)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(hjust = 0.5))
+```
+
+The heat map shows the relationship between different service types and the average quality of life scores with socioeconomic status. The darker the colour, the higher the quality of life score is. Based on the heat map, it can be seen that participants in socioeconomic status group 2 tend to have higher quality of life scores when receiving consultation services. They receive more benefits than they need from the consultation service compared to other services. The other status group in consultation service receives lesser benefits to boost their quality of life score. In the rehab service, it can be noticed that it has the least quality of life score and it might be due to lack of impact compared to other services. Group 2 tends to also benefit more in preventive service because it has the second darkest colour in the heat map. 
+
+Based on the results obtained, it can be said that consultation might be the service type they need the most because of the quality of score distribution in the heat map. Since they benefit more from the consultation, the stakeholders should focus more on giving effective consultation to the people and ensure that it gives equal service quality to each of the socioeconomic statuses as only Group 2 and Group 4 have darker colours in the heat map that indicates the high quality of life score. Since the rehab service might not be so impactful to the people, the healthcare providers should focus more on the preventive and consultation services or even think about improving the rehab service to provide a better quality that can boost the quality of life score. 
+
+```{r}
+# # Group the data by SES and Service Type and calculate the mean Patient Satisfaction score for each group
+satisfaction_pivot <- data %>%
+  group_by(SES, Service.Type) %>%
+  summarise(mean_patient_satisfaction = mean(Patient.Satisfaction..1.10., na.rm = TRUE), .groups = "drop")
+
+head(satisfaction_pivot, 10)
+```
+
+The code above calculates the mean Patient Satisfication for each combination of Socioeconomic Status (SES) and Service Type.
+
+```{r}
+# Create the heatmap for average Patient Satisfaction by SES and Service Type
+ggplot(satisfaction_pivot, aes(x = Service.Type, y = SES, fill = mean_patient_satisfaction)) +
+  geom_tile() +
+  scale_fill_gradient(low = "lightblue", high = "darkblue", name = "Patient Satisfaction") +
+  labs(title = "Average Patient Satisfaction Scores by SES and Service Type", 
+       x = "Service Type", 
+       y = "Socioeconomic Status (SES)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(hjust = 0.5))
+```
+
+Similarly to the quality of life score, the heat map is also used to compare the average patient satisfaction in different service types. It can be seen that most of the patient satisfaction for the service type is quite high in each socioeconomic status except the rehab service in Group 1. It could indicate that the patients with the lowest socioeconomic status group are not satisfied with the service in rehab. The most satisfying service for the patients would be preventive service for Group 1 and rehab service for Group 2. These two are relatively high compared to others because the colours are the darkest. The colour in the consultation column seems to be quite consistent which also tells us that patients from all socioeconomic statuses are quite the same satisfied with the services provided by the consultation. 
+
+It can be concluded that the stakeholders should focus on how to provide a better rehab service for the Group 1 patients due to the lowest satisfaction among all other services and also emphasize the service on consultation and prevention to ensure that the satisfaction from the patient can remain positive. These results can tell the stakeholders that the patients are more consistently happy with the consultation service and it would tell them to make the same adjustments for other services to obtain similar positive results.
+
+### **Company Selection: IHH Healthcare Berhad**
+
+IHH Healthcare Berhad, one of Malaysia's largest healthcare providers, with renowned brands like Pantai Hospitals, Gleneagles Hospitals, and Prince Court Medical Centre, is uniquely positioned to benefit from the insights gained through this exploratory data analysis. As they provide a wide range of services, from preventive care to rehabilitation, understanding patient satisfaction, service access, and physical activity patterns across socioeconomic groups can inform strategic decision-making and improve patient outcomes.
+
+#### **Key Findings and Recommendations:**
+
+**Problem Statement 1: Unequal Access to Preventive Health Services Across Socioeconomic Groups**
+
+The analysis highlights an important disparity: Socioeconomic Status (SES) Group 2 has the highest access to preventive services, yet they report the lowest satisfaction scores. Furthermore, despite their lower satisfaction, Group 2 enjoys the highest quality of life among all SES groups.
+
+While SES Group 2 has high access, other SES groups, such as 1, 3, and 4, have much lower access to preventive services. IHH can focus on making preventive healthcare more accessible to these underserved groups, particularly lower-income patients.
+
+Since Group 2 comprises a significant portion of patients using preventive services, yet their satisfaction is low, there is a need to find out the reasons for this dissatisfaction. This may include addressing long wait times, improving provider-patient communication, or offering more personalised care options to meet patient expectations.
+
+**Problem Statement 2: Low Physical Activity Levels Among Certain Demographic Groups**
+
+The analysis of EMG activity distribution reveals that females generally engage in lower muscle activity compared to males, especially in the lowand moderate categories. On the other hand, males tend to engage more in high EMG activity levels.
+
+IHH can design and promote fitness programs specifically aimed at increasing muscle activity among women. These programs could focus on strength-building exercises to help women progress from low/moderate activity levels to higher engagement.
+
+As step frequency is an indicator of overall physical activity, the similar median step frequency between males and females presents an opportunity for generalised health campaigns. IHH could implement walking programs to promote daily step goals, benefiting both men and women. However, special emphasis should be placed on encouraging females to increase their physical activity, given that males already dominate in high-intensity activity.
+
+**Problem Statement 3: Evaluating Patient Satisfaction Across Health Service Types**
+
+The patient satisfaction heatmap reveals low satisfaction for rehabilitation services, particularly among lower SES groups (SES 1). Even though rehabilitation services contribute positively to patients' quality of life, the mismatch between expected and received services requires attention.
+
+IHH should conduct patient surveys or focus groups to understand why satisfaction is low in lower-income groups. The feedback could uncover issues such as affordability, accessibility, or the quality of patient-provider communication.
+
+Based on patient feedback, personalised rehabilitation plans and additional support like group therapy or recovery sessions can enhance patient satisfaction. Rehabilitation should be seen as a holistic journey, and ensuring that patients feel supported throughout their recovery will lead to better outcomes.
+
+#### **Strategic Benefits for IHH Healthcare Berhad**
+
+By applying the insights gained from this analysis, IHH Healthcare Berhad can:
+
+1.  **Enhance Patient Satisfaction**: 
+
+Focus on improving consultation, preventive and rehabilitation services, particularly for the status groups that report lower satisfaction, as shown in the patient satisfaction heatmap. This can be achieved by addressing key issues such as accessibility, affordability, and quality of care.
+
+2.  **Promote Health and Well-being**: 
+
+Develop programs to encourage higher physical activity levels among women, particularly in muscle-building exercises. This aligns with the broader goal of Sustainable Development Goal (SDG) 3 -- ensuring healthy lives and promoting well-being for all.
+
+#### **Conclusion**
+
+The results of this exploratory data analysis offer valuable insights that can guide IHH Healthcare Berhad in making strategic improvements to its healthcare services. By focusing on unequal access, low physical activity levels, and patient satisfaction, IHH can strengthen its position as a leading healthcare provider in Malaysia, delivering not just medical care, but also a good patient experience across all service types. Aligning these efforts with public health goals and sustainable development objectives will allow IHH to contribute meaningfully to the overall well-being of the communities it serves.
+
+\
+\
+\
+\

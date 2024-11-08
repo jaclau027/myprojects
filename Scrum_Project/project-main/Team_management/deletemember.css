@@ -1,0 +1,316 @@
+body {
+    background-color: #A8CAEA;
+    padding: 20px;
+    }
+    
+    .color-blind-friendly {
+      background-color: #DCD6F1; 
+      color: #000000;
+    }
+    .white-frame{
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    }
+    
+    
+    .light-blue-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+    }
+    
+    
+    .light-blue-card-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+    }
+    
+    
+    .dark-blue-frame {
+    background-color: #1f4b72;
+    padding: 20px;
+    margin: 10px;
+    }
+
+    .pink-frame {
+    background-color: #E8CACA;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    }
+
+    .green-frame {
+    background-color: #b5dbaf;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    }
+    
+  .color-blind-friendly .light-blue-frame {
+    background-color: #dcd2f4;
+  }
+
+  .color-blind-friendly .light-blue-card-frame {
+    background-color: #dcd2f4;
+  }
+
+  .color-blind-friendly .dark-blue-frame {
+    background-color: #7d82a8;
+  }
+
+  .color-blind-friendly .pink-frame {
+    background-color: #e2caca;
+  }
+
+  .color-blind-friendly .green-frame {
+    background-color: #e9c9b6;
+  }
+    .flex {
+    display: flex;
+    }
+    .row {
+    flex-direction: row;
+    }
+    .col {
+    flex-direction: column;
+    }
+    
+    
+    .vertical-scroll {
+    display: inline-flex;
+    gap: 10px;
+    }
+    
+    
+    
+    
+    .card-views {
+    display: grid;
+    gap: 10px;
+    }
+    
+    
+    .previous-page {
+    position: relative;
+    display: inline;
+    width: 5%;
+    padding: 3px;
+    top: 5px;
+    }
+    
+    
+    .header-menu-container {
+    display: flex;
+    align-items: center;
+    }
+    header {
+    margin-left: 40px;
+    }
+    
+    .menu-bar {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+    padding: 3px;
+    z-index: 2;
+    }
+    
+    
+    
+    
+    .previous-page {
+    padding: 10px;
+    }
+    
+    
+    
+    
+    .previous-page a {
+    background-color: none;
+    color: none;
+    border:none;
+    cursor: pointer;
+    position: inline;
+    }
+    
+    
+    
+    
+    .menu-bar button {
+    background-color: gray;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    }
+    
+    .color-blind-friendly .menu-bar button {
+      background-color: #887c80;
+      color: #ffffff;
+    }
+    .menu-items {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    padding: 5px;
+    }
+    
+    .color-blind-friendly .menu-items {
+      background-color: #887c80;
+      color: #ffffff;
+    }
+    .menu-items a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+    }
+    
+    
+    .menu-bar:hover .menu-items {
+    display: block;
+    }
+
+    .teammember {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding-left: 50px;
+        padding-right: 100px;
+        display: inline-flex;
+    }
+
+    .email {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding-left: 100px;
+        padding-right: 100px;
+        display: inline-flex;
+    }
+      
+    .details-frame {
+        text-decoration: none;
+        padding: 5px 10px;
+        font-size: 19px;
+        margin: 5px;
+        width: 70%;
+        line-height: center;
+        margin-right: auto;
+        display: block;
+    }
+
+
+    .details-container {
+        display: flex;
+        align-items: center;
+        margin: 10px;
+    }
+    
+    .name-input {
+        font-size: 20px;
+        padding-left: 50px;
+        flex: 1; /* Use flex property to fill available space */
+    }
+    
+    .email-input {
+        font-size: 20px;
+        padding-left: 20px;
+        flex: 1; /* Use flex property to fill available space */
+    }
+    
+    .checkbox {
+        margin-left: auto; /* Push the checkbox to the right */
+    }
+
+    .delete-button, .discard-button {
+        background-color: darkblue;
+        color: white;
+        text-decoration: none;
+        padding: 5px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+        width: 180px;
+        text-align: center;
+        line-height: center; 
+        margin-left: auto;
+        display: block;
+    }
+    .color-blind-friendly .delete-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    .color-blind-friendly .discard-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+            /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .onoffbutton {
+    text-align: right;
+    display: block;
+  }

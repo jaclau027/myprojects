@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task</title>
+  <link rel="stylesheet" href="sprint.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+  <div class="white-frame">
+        <div class="header-menu-container">
+            
+            <div class="previous-page" id="previous-page">
+                <a><img src="../Product_Backlog/previouspage.png" width=30px height = 30px></a>
+            </div>
+
+            
+            <div class="menu-bar">
+                <button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+                <div class="menu-items" id="menu-items">
+                  <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+                  <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+                  <a id="teamManagement" style="cursor: pointer;">Team management</a>
+                  <a id="profile" style="cursor: pointer;">Profile</a>
+                  <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+                  <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <div id="add-button" class="add-button">Add task</div>
+            </div>
+
+            <header>
+                <h1>Sprint Backlog</h1>
+            </header>
+        </div>
+
+
+    <div class="light-blue-frame">
+        <div class="dark-blue-frame">
+            <div class="horizontal-scroll">
+                <div class="kanban-column" id="To-Do-kanban">
+                    <div class="kanban-card" id="Not Started">Not Started</div>
+                    <div class="light-blue-card-frame">
+                        <div class="card-views" id="Not Started-container">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="kanban-column" id = "In-Progress-kanban">
+                    <div class="kanban-card" id="In Progress">In Progress</div>
+                    <div class="light-blue-card-frame">
+                        <div class="card-views" id="In Progress-container">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="kanban-column" id = "Done-kanban">
+                    <div class="kanban-card" id="Completed">Completed</div>
+                    <div class="light-blue-card-frame">
+                        <div class="card-views" id="Completed-container">
+                            
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+    </div>
+
+
+    <div class="pink-frame">
+        <h2>Story Points Burndown Chart</h2>
+        <canvas id="lineChart"></canvas>
+    </div>
+
+
+    <!--If this code is commented the add task btn in the sprint is not working and
+    the tasks in the kanban board will be gone -->
+    
+    <!--The original code for the view chart-->
+    <!-- <div class="green-frame">
+        <h2>Total Time Spent</h2>
+        <canvas id="lineChart2"></canvas>
+    </div> -->
+
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, orderByChild,update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+const addNewTask = document.getElementById("add-button")
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const taskList = document.getElementById("card-views-container");
+const savedTasks = [];
+const originalTasks = [];
+
+const urlParams = new URLSearchParams(window.location.search),
+    sprintId = urlParams.get("sprintId")
+document.addEventListener("DOMContentLoaded", function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+const app = initializeApp(firebaseConfig);
+const urlParams = new URLSearchParams(window.location.search),
+    sprintId = urlParams.get("sprintId")
+const db = getDatabase(app);
+    const username = urlParams.get("username")
+    document.getElementById("previous-page").addEventListener("click",function(){
+      window.location.href = `scrumboard.html?username=${username}`
+    })
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+const selectedTasks = []
+    get(ref(db,`newsprint/${sprintId}/selectedTasks`)).then((e)=>{
+      if (e.exists()) {
+            e.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                console.log(childData)
+                selectedTasks.push(childData)
+            });
+      }
+    }).then(()=>{displayBurnDownChart(selectedTasks)})
+    function displayBurnDownChart(selectedTasks){
+      var totalStoryPoints = 0
+      selectedTasks.forEach((task)=>{
+        totalStoryPoints += parseInt(task['taskStoryPoints'])
+      })
+      get(ref(db,`newsprint/${sprintId}`)).then((sprint)=>{
+        const duration = []
+        const sprintObj = sprint.val()
+        const startDate = sprintObj["startDate"]
+        const endDate = sprintObj["endDate"]
+        var [startYear,startMonth,startDay] = startDate.split("-"),
+            [endYear,endMonth,endDay] = endDate.split("-")
+        startYear = parseInt(startYear)
+        startMonth = parseInt(startMonth)
+        startDay = parseInt(startDay)
+        endYear = parseInt(endYear)
+        endMonth = parseInt(endMonth)
+        endDay = parseInt(endDay)
+        if (startYear==endYear){
+          if (startMonth == endMonth){
+            for (let day = startDay;day<=endDay;day++){
+              const dateString = [startYear,startMonth,day].join("-")
+              duration.push(dateString)
+            }
+          }
+          else {
+            for (let month = startMonth;month<=endMonth;month++) {
+                if (month == startMonth){
+                  if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = startDay;day<=31;day++){
+                      const dateString = [startYear,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if ([4,6,9,11].includes(month)){
+                    for (let day = startDay;day<=30;day++){
+                      const dateString = [startYear,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if (month == 2){
+                    if ((startYear % 4 == 0 && startYear % 100 != 0) || startYear % 400 == 0){
+                      for (let day = startDay;day<=29;day++){
+                        const dateString = [startYear,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = startDay;day<=28;day++){
+                        const dateString = [startYear,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+                }
+                else if (month < endMonth) {
+                  if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = 1;day<=31;day++){
+                      const dateString = [startYear,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if ([4,6,9,11].includes(month)){
+                    for (let day = 1;day<=30;day++){
+                      const dateString = [startYear,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if (month == 2){
+                    if ((startYear % 4 == 0 && startYear % 100 != 0) || startYear % 400 == 0){
+                      for (let day = 1;day<=29;day++){
+                        const dateString = [startYear,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = 1;day<=28;day++){
+                        const dateString = [startYear,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+                }
+                else if (month == endMonth) {
+                  for (let day = 1;day<=endDay;day++){
+                    const dateString = [startYear,month,day].join("-")
+                    duration.push(dateString)
+                  }
+                } 
+            }
+          }
+        }
+        else {
+          for (let year = startYear;year<=endYear;year++){
+            if (year == startYear){
+              for (let month = startMonth;month<=12;month++) {
+                if (month == startMonth){
+                  if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = startDay;day<=31;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if ([4,6,9,11].includes(month)){
+                    for (let day = startDay;day<=30;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if (month == 2){
+                    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0){
+                      for (let day = startDay;day<=29;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = startDay;day<=28;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+                }
+                else {
+                  if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = 1;day<=31;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if ([4,6,9,11].includes(month)){
+                    for (let day = 1;day<=30;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                  else if (month == 2){
+                    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0){
+                      for (let day = 1;day<=29;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = 1;day<=28;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            else if (year < endYear){
+              for (let month = 1;month<=12;month++){
+                if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = 1;day<=31;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                else if ([4,6,9,11].includes(month)){
+                    for (let day = 1;day<=30;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                else if (month == 2){
+                    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0){
+                      for (let day = 1;day<=29;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = 1;day<=28;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+              }   
+            }
+            else if (year == endYear){
+              for (let month = 1;month<=endMonth;month++){
+                if (month != endMonth){
+                if ([1,3,5,7,8,10,12].includes(month)){
+                    for (let day = 1;day<=31;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                else if ([4,6,9,11].includes(month)){
+                    for (let day = 1;day<=30;day++){
+                      const dateString = [year,month,day].join("-")
+                      duration.push(dateString)
+                    }
+                  }
+                else if (month == 2){
+                    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0){
+                      for (let day = 1;day<=29;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                    else {
+                      for (let day = 1;day<=28;day++){
+                        const dateString = [year,month,day].join("-")
+                        duration.push(dateString)
+                      }
+                    }
+                  }
+                }
+                else {
+                  for (let day = 1;day <= endDay;day++){
+                    const dateString = [year,month,day].join("-")
+                    duration.push(dateString)
+                  }
+                }
+              }  
+            }
+          }
+        }
+        console.log(duration.length)
+        const actualStoryPointsDone = {}
+        get(ref(db,`newsprint/${sprintId}/selectedTasks`)).then((selectedTasks)=>{
+        const completedTasks = []
+        selectedTasks.forEach((task)=>{
+          const taskObj = task.val()
+          if (taskObj["taskStatus"] == "Completed") {
+          completedTasks.push(taskObj)
+        }
+        })
+        completedTasks.forEach((task)=>{
+          if (actualStoryPointsDone[task.dateCompleted] == null){
+            actualStoryPointsDone[task.dateCompleted] = parseInt(task.taskStoryPoints)
+          }
+          else {
+            actualStoryPointsDone[task.dateCompleted] += parseInt(task.taskStoryPoints);
+          }
+        })
+
+      
+    // Get a reference to the canvas element
+    //const starttime = performance.now()
+    const expectedData =[]
+    const average = totalStoryPoints/(duration.length-1)
+    console.log(average)
+    console.log(duration.length)
+    for (let i=duration.length-1;i>=0;i--){
+      expectedData.push(Math.round(average*i))
+      console.log(i)
+    }
+    console.log(expectedData)
+    const actualData = []
+    var remainingStoryPoints = totalStoryPoints
+    const actualKeys = Object.keys(actualStoryPointsDone)
+    const actualValues = Object.values(actualStoryPointsDone)
+    console.log(actualData)
+    for (let i=0;i<duration.length;i++){
+      if (actualKeys.includes(duration[i])){
+        remainingStoryPoints = remainingStoryPoints - actualValues[actualKeys.indexOf(duration[i])]
+        actualData.push(remainingStoryPoints)
+      }
+      else{
+        actualData.push(remainingStoryPoints)
+      }}
+    const toggleButton = document.getElementById("toggleButton");
+    let color = 'blue';
+    let color2 = 'red';
+    toggleButton.addEventListener("change", function() {
+      if (toggleButton.checked) {
+        color = "#204f7f";
+        color2 = "#9b7a26";
+      } else {
+        color = 'blue';
+        color2 = 'red';
+      }
+      var data = {
+      labels: duration,
+      datasets: [{
+        label: 'Expected velocity',
+        data: expectedData, // Example data points
+        borderColor: color,    // Line color
+        borderWidth: 2,         // Line width
+        fill: false,
+        tension: 0              // Fill under the line (false for line chart)
+      },{
+        label: 'Actual velocity',
+        data: actualData, // Example data points
+        borderColor: color2,    // Line color
+        borderWidth: 2,         // Line width
+        fill: false,
+        tension: 0              // Fill under the line (false for line chart)
+      }]
+    };
+    generateChart(data)
+    });
+    // Define your data as an array of data points
+    if (toggleButton.checked) {
+        color = "#204f7f";
+        color2 = "#9b7a26";
+      } else {
+        color = 'blue';
+        color2 = 'red';
+      }
+    var data = {
+      labels: duration,
+      datasets: [{
+        label: 'Expected velocity',
+        data: expectedData, // Example data points
+        borderColor: color,    // Line color
+        borderWidth: 2,         // Line width
+        fill: false,
+        tension: 0              // Fill under the line (false for line chart)
+      },{
+        label: 'Actual velocity',
+        data: actualData, // Example data points
+        borderColor: color2,    // Line color
+        borderWidth: 2,         // Line width
+        fill: false,
+        tension: 0              // Fill under the line (false for line chart)
+      }]
+    };
+    generateChart(data)
+      })
+    })
+  
+    // Create the line chart
+    function generateChart(data){
+      var ctx = document.getElementById('lineChart').getContext('2d');
+      var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+          scales: {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Date' // Set the X-axis label
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Remaining Story Points' // Set the Y-axis label
+              }
+            }]
+          }
+        }
+      });
+    }
+  }
+
+
+    const que = query(ref(db, `newsprint/${sprintId}/selectedTasks`));
+
+    const lightBlueFrames = document.querySelectorAll('.kanban-column'); //.light-blue-frame
+    lightBlueFrames.forEach((frame) => {
+        frame.addEventListener("dragover", allowDrop);
+        frame.addEventListener("drop", drop);
+    });
+   
+    get(que).then((snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                savedTasks.push(childData)
+                originalTasks.push(childData)
+            });
+    }}
+    
+    )
+    .then(() => {console.log(savedTasks)})
+    .then(() => displayTasks(savedTasks))
+    .then(() => addDraggableAttributes())
+    .catch((error) => {
+        console.error("Error getting data:", error);
+    });
+    console.log(savedTasks)
+    addNewTask.addEventListener("click",function(){
+      window.location.href = `addtask.html?username=${username}&sprintId=${sprintId}`
+    })
+    
+  
+
+
+    // DISPLAY
+    function displayTasks(taskData) {
+            console.log(taskData)
+            taskData.forEach(function (task, index) {
+    
+                const taskCard = document.createElement("div");
+                taskCard.classList.add("cardview");
+                taskCard.id = task.taskName;
+                taskCard.style.cursor = "pointer";
+                taskCard.draggable = true;
+    
+                const taskName = document.createElement("div");
+                taskName.className = "task-name";
+                taskName.textContent = task.taskName;
+    
+                const priority = document.createElement("div");
+                priority.className = "priority";
+                priority.textContent = `Priority: ${task.taskPriority}`;
+    
+    
+                const storyPoints = document.createElement("div");
+                storyPoints.className = "story-points";
+                storyPoints.textContent = `Story Points: ${task.taskStoryPoints}`;
+
+
+                const tagsPair = ['Frontend','Backend', 'API','Database','Framework','Testing','UI','UX']
+                const tagsContainer = document.createElement("div");
+                tagsContainer.className = "tags-container";
+                if (typeof(task.taskTags) !== "undefined"){
+                    task.taskTags.forEach((tag) => {
+                        if (tagsPair.includes(tag)){
+                            const tagElement = document.createElement("div");
+                            tagElement.classList.add("tags",`tags${tagsPair.indexOf(tag)+1}`);
+                            tagsContainer.appendChild(tagElement);
+                        }
+                    });   
+                }
+
+                taskCard.appendChild(taskName)
+                taskCard.appendChild(priority)
+                taskCard.appendChild(storyPoints)
+                taskCard.appendChild(tagsContainer)
+                taskCard.addEventListener("click",function (){
+                window.location.href = `task.html?username=${username}&sprintId=${sprintId}&taskId=${taskName.textContent}`})
+                document.getElementById(`${task.taskStatus}-container`).appendChild(taskCard); 
+            });
+        
+        return taskData;
+    }
+
+function addDraggableAttributes() {
+    const taskCards = document.querySelectorAll('.cardview');
+    taskCards.forEach((taskCard) => {
+        taskCard.draggable = true;
+        taskCard.addEventListener("dragstart", function (event) {
+            onDragStart(event);
+        });
+    });
+}
+
+// Function to allow dropping elements (Event Handler)
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+// Function to handle the drop event (Event Handler)
+function drop(event) {
+    event.preventDefault();
+    const taskId = event.dataTransfer.getData("text/plain");
+    console.log(taskId)
+    const taskCard = document.getElementById(taskId);
+    
+    // Find the target light blue frame
+    const targetLightBlueFrame = event.target.closest('.kanban-column');
+    
+    if (targetLightBlueFrame && taskCard) {
+        // Append the taskCard to the target light blue frame
+        targetLightBlueFrame.querySelector('.card-views').appendChild(taskCard);
+        
+        // Update the task status (To do, In Progress, Done) based on the target light blue frame
+        const status = targetLightBlueFrame.querySelector('.kanban-card').id;
+        console.log(`status: ${status}`)
+        console.log(sprintId)
+        get(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`)).then((task)=>{
+          if (status == "Completed" && task.val()["taskStatus"] != "Completed"){
+            const date = new Date()
+            const year = date.toLocaleString('en-GB',{year:"numeric"})
+            const month = date.toLocaleString('en-GB',{month:"2-digit"})
+            const day = date.toLocaleString('en-GB',{day:"2-digit"})
+            const monthInt = parseInt(month)
+            const dayInt = parseInt(day)
+            const dateString = [year,monthInt,dayInt].join("-")
+            update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),{
+            taskStatus:status,
+            dateCompleted:dateString
+            })
+          }
+          else if (status == "Completed" && task.val()["taskStatus"] == "Completed"){
+            update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),{
+            taskStatus:status
+            })
+          }
+          else{
+            update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),{
+            taskStatus:status,
+            dateCompleted:null
+            })
+          }
+        })
+        // You can update the task status in your savedTasks or database here
+        
+    }
+    const selectedTasks = []
+    get(ref(db,`newsprint/${sprintId}/selectedTasks`)).then((e)=>{
+      if (e.exists()) {
+            e.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                console.log(childData)
+                selectedTasks.push(childData)
+            });
+      }
+    }).then(()=>{displayBurnDownChart(selectedTasks)})
+}
+
+
+// Function to handle the drag start event (Event Handler)
+function onDragStart(event) {
+    event.dataTransfer.setData("text/plain", event.target.id);
+}
+})
+
+
+
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script>
+    const toggleButton = document.getElementById("toggleButton");
+    const body = document.body;
+    toggleButton.addEventListener("change", function() {
+      if (toggleButton.checked) {
+        body.classList.add("color-blind-friendly");
+      } else {
+        body.classList.remove("color-blind-friendly");
+      }
+    });
+  </script>
+</body>
+</html>

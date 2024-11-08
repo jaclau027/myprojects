@@ -1,0 +1,249 @@
+body {
+    background-color: #A8CAEA;
+    padding: 20px;
+  }
+.color-blind-friendly {
+  background-color: #DCD6F1; 
+  color: #000000;
+}
+.white-frame{
+  background-color: white;
+  padding: 20px;
+  margin: 10px;
+}
+
+.text {
+    font-family: arial, helvetica, sans-serif;
+}
+
+.light-yellow-frame {
+    background-color: rgb(249, 249, 195);
+    padding: 20px;
+    position: relative;
+    padding: 7%;
+}
+
+.color-blind-friendly .light-yellow-frame{
+  background-color:  #fdf3ed; 
+}
+
+.white-new-frame {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 7%;
+}
+
+
+
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+.task-frame{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #E3F6FC;
+    padding:20px;
+    margin: 20px, 10px;
+}
+.flex {
+  display: flex;
+}
+.row {
+  flex-direction: row;
+}
+.col {
+  flex-direction: column;
+  row-gap: 50px;
+}
+main {
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+
+  .menu-bar {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+    padding: 3px;
+    z-index: 2;
+  }
+  .previous-page {
+    position: relative;
+    display: inline;
+    width: 5%;
+    padding: 3px;
+    top: 5px;
+  }
+.previous-page a {
+  background-color: none;
+  color: none;
+  border:none;
+  cursor: pointer;
+  position: inline;
+}
+.menu-bar button {
+    background-color: gray;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-items {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    padding: 5px;
+}
+
+.color-blind-friendly .menu-items {
+  background-color: #887c80;
+}
+.color-blind-friendly .menu-bar button {
+  background-color: #887c80;
+}
+.menu-items a {
+  display: block;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.menu-bar:hover .menu-items {
+    display: block;
+}
+
+.button-container {
+    align-items: right; 
+    margin-top: 5px; 
+  }
+
+.confirm-button, .cancel-button {
+  background-color: darkblue;
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 15px;
+  margin: 5px;
+  width: 65px;
+  text-align: center;
+  line-height: center; 
+  margin-left: auto;
+  display: block;
+}
+
+.color-blind-friendly .confirm-button{
+  background-color: #0e2a45;
+  color: white;
+}
+
+.color-blind-friendly .cancel-button{
+  background-color: #0e2a45;
+  color: white;
+}
+
+
+.task-description {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    padding: 10px;
+}
+.description {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+    border:none;
+}
+.text {
+    font-family: arial, helvetica, sans-serif;
+}
+
+
+.input-field {
+    width: 60px; /* Adjust the width as needed */
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #f7f7f7; /* Background color for read-only appearance */
+    color: #333; /* Text color */
+    cursor: default; /* Prevents the cursor from changing on hover */
+    pointer-events: none; /* Prevents interaction with the input field */
+}
+
+
+        /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .onoffbutton {
+    text-align: right;
+    display: block;
+  }

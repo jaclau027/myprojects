@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit member</title>
+  <link rel="stylesheet" href="editmember.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="white-frame">
+    <div class="light-blue-frame">
+        <header>
+            <h1>Create new user</h1>
+            </header>
+            <div class="inputsection">
+            <label for="username">Please create new username</label>
+            <input type="text" id="username" name="username">
+            <br>
+            <label for="email">Please create new email</label>
+            <input type="text" id="email" name="email">
+            <br>
+            <label for="password">Please create new password</label>
+            <input type="password" id="password" name="password">
+        </div>
+            <br>
+        <div class="button-container">
+            <a style="cursor: pointer;" id="confirm-button" class="confirm-button">Confirm</a>
+            <a style="cursor: pointer;" id="cancel-button" class="cancel-button">Cancel</a>
+        </div>
+    </div>
+</div>
+    
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+  const firebaseConfig = {
+      apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+      authDomain: "project-2782373696466964042.firebaseapp.com",
+      databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "project-2782373696466964042",
+      storageBucket: "project-2782373696466964042.appspot.com",
+      messagingSenderId: "971400388443",
+      appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+  };
+
+  document.addEventListener("DOMContentLoaded",function(){
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const urlParams = new URLSearchParams(window.location.search)
+    const usernameUrl = urlParams.get("username")
+    get(ref(db,`addMember/${usernameUrl}`)).then((user)=>{
+      if (!user.exists()){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["identity"] != "admin"){
+        alert("You have no access to add member")
+        window.location.href = `../Product_Backlog/prodBacklog.html?username=${usernameUrl}`
+      }
+    })
+
+  // ------------------------------------------- Confirm button------------------------------------------------------------------
+
+    document.getElementById("confirm-button").addEventListener('click', function(e){
+      function isValidEmail(email) {
+        const emailPattern = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/ 
+        const bool = emailPattern.test(email.value)
+        console.log(bool)
+        // Regular expression pattern for a valid email address
+        if (bool){
+          return true
+        }
+        else {
+          alert("Invalid Email Address")
+          return false
+        }
+      }
+      const valid_email = isValidEmail(email)
+      if(username.value !== "" && password.value !== "")
+      {
+        if (valid_email){
+        set(ref(db, 'addMember/' + username.value),
+        {
+          username : username.value,
+          email : email.value,
+          password : password.value,
+          identity: "member"
+        })
+        .then(() => {alert(username.value + ' is added as the new member.')})
+        .then(() => {window.location.href = `profilepage.html?username=${usernameUrl}`});
+        }
+      }else{
+        alert("Please fill in all the member's details.");
+      }
+    })
+
+  // ------------------------------------------- Cancel button------------------------------------------------------------------
+
+    document.getElementById("cancel-button").addEventListener('click', function(e){
+        window.location.href = `profilepage.html?username=${usernameUrl}`;
+      }) 
+
+  // ------------------------------------------- Back button------------------------------------------------------------------
+
+    document.querySelector(".previous-page").addEventListener('click', function(e){
+          window.location.href = `profilepage.html?username=${usernameUrl}`;
+        }) 
+  })
+
+</script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+    } else {
+      body.classList.remove("color-blind-friendly");
+    }
+  });
+
+</script>
+</body>
+</html>

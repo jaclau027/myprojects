@@ -1,0 +1,559 @@
+body {
+    background-color: #A8CAEA;
+    padding: 20px;
+  }
+
+.color-blind-friendly {
+  background-color: #DCD6F1; /* Change background color to white */
+  color: #000000; /* Change text color to black */
+}
+
+.white-frame{
+  background-color: white;
+  padding: 20px;
+  margin: 10px;
+}
+.green-frame {
+  background-color: #b5dbaf;
+  margin: 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+.green-frame h2 {
+  margin-left: 20px; /* Add spacing between the heading and the green frame's border */
+}
+.content {
+  display: flex;
+  flex-direction: row;
+}
+.color-blind-friendly .light-blue-frame {
+  background-color: #dcd2f4;
+}
+
+.color-blind-friendly .light-blue-card-frame {
+  background-color: #dcd2f4;
+}
+
+.color-blind-friendly .dark-blue-frame {
+  background-color: #7d82a8;
+}
+
+.color-blind-friendly .pink-frame {
+  background-color: #e2caca;
+}
+
+.color-blind-friendly .green-frame {
+  background-color: #e9c9b6;
+}
+.task-frame{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #E3F6FC;
+    padding:20px;
+    margin: 20px, 10px;
+}
+
+.color-blind-friendly .task-frame {
+  background-color: #fceefa;
+}
+
+.previous-button{
+  display: inline;
+  position: relative;
+  cursor: pointer;
+}
+.flex {
+  display: flex;
+}
+.row {
+  flex-direction: row;
+}
+.col {
+  flex-direction: column;
+  row-gap: 50px;
+}
+main {
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+
+  .taskview {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); /* Adjust column layout as needed */
+    gap: 10px;
+  }
+  
+  /* Media query for smaller screens */
+  @media screen and (max-width: 768px) {
+    .taskview {
+      grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); /* One column for small screens */
+    }
+  }
+
+  .card {
+    position: relative;
+    border: 1px solid #E3F6FC;
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .cardview {
+    background-color: #E3F6FC;
+    border: 1px solid #E3F6FC;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative; 
+  }
+
+  .color-blind-friendly .card {
+    background-color: #fceefa;
+  }
+
+  .color-blind-friendly .cardview {
+    background-color: #fceefa;
+  }
+
+  .cardview a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .task-name {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .priority, .story-points {
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  .tags-container {
+    display: flex;
+    flex-direction: column;
+    align-items:end;
+  }
+  
+ 
+  .tags {
+    background-color: #4472c4; 
+    color: white;
+    width: 70px;
+    height: 20px;
+    text-align:center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+
+  .menu-bar {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+    padding: 3px;
+    z-index: 2;
+  }
+  .previous-page {
+    position: relative;
+    display: inline;
+    width: 5%;
+    padding: 3px;
+    top: 5px;
+  }
+.previous-page a {
+  background-color: none;
+  color: none;
+  border:none;
+  cursor: pointer;
+  position: inline;
+}
+.menu-bar button {
+    background-color: gray;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+.color-blind-friendly .menu-bar button {
+  background-color: #887c80; /* Change menu button background color to dark gray */
+}
+.menu-items {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    padding: 5px;
+}
+.color-blind-friendly .menu-items {
+  background-color: #887c80; /* Change menu button background color to dark gray */
+}
+.menu-items a {
+  display: block;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.menu-bar:hover .menu-items {
+    display: block;
+}
+
+.button-container {
+    align-items: right; 
+    margin-top: 5px; 
+  }
+  
+.edit-button, .delete-button, .save-button,.tag-button {
+    background-color: darkblue;
+    color: white;
+    text-decoration: none;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+    width: 40px;
+    text-align: center;
+    line-height: center; 
+    margin-left: auto;
+    display: block;
+}
+
+.color-blind-friendly .edit-button{
+  background-color: #0e2a45; /* Change menu button background color to dark gray */
+  color: white; /* Change menu button text color to white */
+}
+.color-blind-friendly .delete-button{
+  background-color: #0e2a45; /* Change menu button background color to dark gray */
+  color: white; /* Change menu button text color to white */
+}
+.tags.tags1{
+    background-color: #AF4A93; /*Frontend*/
+    color: black;
+    display: none;
+  }
+
+
+  .tags.tags2{
+    background-color: #EE8306; /*Backend*/
+    color: black;
+    display: none;
+  }
+
+
+  .tags.tags3{
+    background-color: #DFCC22; /*API*/
+    color: black;
+    display: none;
+  }
+
+
+  .tags.tags4{
+    background-color: #3EC133; /*Database*/
+    color: black;
+    display: none;
+  }
+ 
+  .tags.tags5{
+    background-color: #7eb0fa; /*Framework*/
+    color: black;
+    display: none;
+  }
+
+
+  .tags.tags6{
+    background-color: #9747FF; /*Testing*/
+    color: black;
+    display: none;
+  }
+
+
+  .tags.tags7{
+    background-color: #959AA1; /*UI*/
+    color: black;
+    display: none; 
+  }
+
+
+  .tags.tags8{
+    background-color: #964B00; /*UX*/
+    color: black;
+    display: none;
+  }
+
+  .color-blind-friendly .tags.tags1{
+    background-color: #6d6d86; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tags.tags2{
+    background-color: #c19732; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags3{
+    background-color: #f5c150; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags4{
+    background-color: #caa154; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags5{
+    background-color: #91aaf5; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tags.tags6{
+    background-color: #3477c7; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags7{
+    background-color: #a095a0; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags8{
+    background-color: #755c1b; /* Change menu button text color to white */
+  }
+.task-description {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+}
+.description {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #d9d9d9;
+    border:none;
+}
+
+.color-blind-friendly .description{
+  background-color: #e8d2da; /* Change menu button text color to white */
+}
+
+.text {
+    font-family: arial, helvetica, sans-serif;
+}
+
+/* Default styles for the <select> element */
+select {
+    display: inline-block;
+    padding: 2px 20px 2px 5px; /* Adjust padding as needed */
+    font-size: 16px; /* Adjust font size as needed */
+    border: 1px solid #ccc; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
+    cursor: pointer; /* Cursor style */
+}
+
+/* Default styles for the <option> elements within a <select> */
+select option {
+    padding: 5px; /* Adjust padding as needed */
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
+}
+
+/* Default style for the selected <option> */
+select option:checked {
+    background-color: #007bff; /* Background color of the selected option */
+    color: #fff; /* Text color of the selected option */
+}
+
+/* Default style for the dropdown arrow */
+select::-ms-expand {
+    display: none; /* Hides the default arrow in IE */
+}
+
+/* Default styles for the dropdown arrow in modern browsers */
+select::after {
+    content: '\25BC'; /* Unicode character for a down arrow ▼ */
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Adjust the right position as needed */
+    transform: translateY(-50%);
+}
+
+/* Default style for the dropdown when the <select> is opened */
+select:active, select:focus {
+    border-color: #007bff; /* Border color when active or focused */
+    outline: none; /* Remove outline when focused */
+}
+
+/* Default styles for the dropdown list when opened */
+select:focus option {
+    background-color: #f5f5f5; /* Background color of options when opened */
+    color: #333; /* Text color of options when opened */
+}
+.input-field {
+    width: 60px; /* Adjust the width as needed */
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #f7f7f7; /* Background color for read-only appearance */
+    color: #333; /* Text color */
+    cursor: default; /* Prevents the cursor from changing on hover */
+    pointer-events: none; /* Prevents interaction with the input field */
+}
+.tag1,.tag2,.tag3,.tag4,.tag5,.tag6,.tag7,.tag8 {
+    text-align:left;
+    background-color: #222b35;
+    cursor: pointer;
+  }
+  .tag1 {
+    color: #959AA1;
+  }
+  .tag2 {
+    color: #FFBF00;
+  }
+  .tag3 {
+    color: #FFFF00;
+  }
+  .tag4 {
+    color: #92d051;
+  }
+  .tag5 {
+    color: #06b0f0;
+  }
+  .tag6 {
+    color: #5a2e81;
+  }
+  .tag7 {
+    color: white;
+  }
+  .tag8 {
+    color: #AA7942;
+  }
+  .color-blind-friendly .tag1 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #a095a0; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tag2 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #FFBF00; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tag3 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #fdf5eb; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tag4 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #e2b66a; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tag5 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #83a1ef; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tag6 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #254574; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tag7 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: white; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tag8 {
+    background-color: #59586a; /* Change menu button background color to dark gray */
+    color: #9b7d4c; /* Change menu button text color to white */
+  }
+  .tag1,.tag2,.tag3,.tag4,.tag5,.tag6,.tag7,.tag8 {
+    border: none;
+    width: 200px;
+    height: 30px;
+    text-decoration: none;
+    font-size: 16px;
+    position: relative;
+    display: block;
+  }
+.tag-bar {
+    position: relative;
+    align-items: end;
+  }
+.tag-menu {
+    display: none;
+    position: relative;
+}
+.tag-bar:hover .tag-menu {
+    display: flex;
+    flex-direction: column;
+    column-gap: 0px;
+    align-items: end;
+    position: relative;
+}
+
+
+
+
+        /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .onoffbutton {
+    text-align: right;
+    display: block;
+  }

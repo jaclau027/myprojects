@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task</title>
+  <link rel="stylesheet" href="edittask.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+  <div class="white-frame">
+      <div class="previous-page" id="previous-page">
+        <img src="previouspage.png" width=30px height = 30px>
+      </div>
+      <div class="menu-bar">
+        <button id="menu-button"><img src="menubar.png" width=30px height=20px></button>
+        <div class="menu-items" id="menu-items">
+          <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+            <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+            <a id="teamManagement" style="cursor: pointer;">Team management</a>
+            <a id="profile" style="cursor: pointer;">Profile</a>
+            <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+            <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+        </div>
+      </div>
+
+    <div class="task-frame flex col">
+      <div class="task-name" id="task-name">Task name</div>
+      <div class="taskview">
+        <div class="flex col">
+          <div class="assignee">
+            <span class="text">Assignee: </span>
+            <select name="team-member" id="AssigneeList">
+              </select>
+          </div>
+          <div class="priority">
+            <span class="text">Priority: </span>
+            <select name="priority" id="priorities">
+                <option value="Low" style="color: green;">Low</option>
+                <option value="Medium" style="color: yellow;">Medium</option>
+                <option value="Important" style="color: orange;">Important</option>
+                <option value="Urgent" style="color: red;">Urgent</option>
+              </select>
+          </div>
+          <div class="stage-of-task">
+            <span class="text">Stage of task: </span>
+            <select name="Stage-of-task" id="SOT">
+                <option value="Planning">Planning</option>
+                <option value="Development">Development</option>
+                <option value="Testing">Testing</option>
+                <option value="Integration">Integration</option>
+              </select>
+          </div>
+        </div>
+        <div class="flex col">
+          <div class="story-points">
+            <span class="text">Story Points: </span>
+            <button class="decrement-button" id="decrement">-</button>
+            <input type="number" class="input-field" id="storyPoints" value="1" min="1" max="10" disabled>
+            <button class="increment-button" id="increment">+</button>
+          </div>
+          <div class="status">
+            <span class="text">Status: </span>
+            <input type="radio" id="Not Started" name="status" value="Not Started">
+            <label for="Not Started"> Not Started </label>
+           <!-- <input type="radio" id="In Progress" name="status" value="In Progress">
+            <label for="In Progress"> In Progress </label>
+            <input type="radio" id="Completed" name="status" value="Completed">
+            <label for="Completed"> Completed</label>-->
+          </div>
+          <div class="category">
+            <span class="text">Task Type: </span>
+            <input type="radio" id="Story" name="category" value="Story">
+            <label for="Story"> Story </label>
+            <input type="radio" id="Bug" name="category" value="Bug">
+            <label for="Bug"> Bug </label>
+          </div>
+        </div>
+          <div class="tags-container">
+            <div class="tags tags1" id="FE"></div>
+            <div class="tags tags2" id="BE"></div>
+            <div class="tags tags3" id="API"></div>
+            <div class="tags tags4" id="DB"></div>
+            <div class="tags tags5" id="FW"></div>
+            <div class="tags tags6" id="TEST"></div>
+            <div class="tags tags7" id="UI"></div>
+            <div class="tags tags8" id="UX"></div>
+
+          </div>
+      </div>
+      <div class="task-description">
+        <div class="text">Task description:</div>
+        <textarea rows="8" columns="50" class="description text" id="task-description" value="..."></textarea>
+      </div>
+    </div>
+
+ 
+    <br>
+    <div class="button-container">
+        <a href="task.html" id="save-button" class="save-button">save</a>
+        <div class="tag-bar" id="tag-bar">
+            <div class="tag-menu" id="tag-menu">
+                <label class="tag1" for="FEoption"><input type="checkbox" id="FEoption" name="tag" value="Frontend">Frontend</label>
+                <label class="tag2" for="BEoption"><input type="checkbox" id="BEoption" name="tag" value="Backend">Backend</label>
+                <label class="tag3" for="APIoption"><input type="checkbox" id="APIoption" name="tag" value="API">API</label>
+                <label class="tag4" for="DBoption"><input type="checkbox" id="DBoption" name="tag" value="Database">Database</label>
+                <label class="tag5" for="FWoption"><input type="checkbox" id="FWoption" name="tag" value="Framework">Framework</label>
+                <label class="tag6" for="TESToption"><input type="checkbox" id="TESToption" name="tag" value="Testing">Testing</label>
+                <label class="tag7" for="UIoption"><input type="checkbox" id="UIoption" name="tag" value="UI">UI</label>
+                <label class="tag8" for="UXoption"><input type="checkbox" id="UXoption" name="tag" value="UX">UX</label>
+            </div>
+            <div class="tag-button" id="tag-button">Tag</div>
+        </div>
+        <div id="delete-button" class="delete-button">Delete</div>
+    </div>
+    
+
+  </div>
+<script type="module">
+// import { displayedTasks } from "./taskManager.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, update,remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+
+const 
+  FEoption = document.getElementById("FEoption"),
+  BEoption = document.getElementById("BEoption"),
+  APIoption = document.getElementById("APIoption"),
+  DBoption = document.getElementById("DBoption"),
+  FWoption = document.getElementById("FWoption"),
+  TESToption = document.getElementById("TESToption"),
+  UIoption = document.getElementById("UIoption"),
+  UXoption = document.getElementById("UXoption"),
+  tagOptionList = [FEoption,BEoption,APIoption,DBoption,FWoption,TESToption,UIoption,UXoption],
+  FE = document.getElementById("FE"),
+  BE = document.getElementById("BE"),
+  API = document.getElementById("API"),
+  DB = document.getElementById("DB"),
+  FW = document.getElementById("FW"),
+  TEST = document.getElementById("TEST"),
+  UI = document.getElementById("UI"),
+  UX = document.getElementById("UX"),
+  increment = document.getElementById("increment"),
+  decrement = document.getElementById("decrement"),
+  tagDisplayList = [FE,BE,API,DB,FW,TEST,UI,UX],
+  urlParams = new URLSearchParams(window.location.search),
+  taskId = urlParams.get("taskId"),
+  previousPage = document.getElementById("previous-page")
+  const taskNameElement = document.getElementById("task-name");
+const taskDescriptionElement = document.getElementById("task-description");
+const taskPriorityElement = document.getElementById("priorities");
+const storyPointsElement = document.getElementById("storyPoints");
+const taskAssigneeElement = document.getElementById("AssigneeList");
+const taskStageElement = document.getElementById("SOT");
+const notStarted = document.getElementById("Not Started"),
+  inProgress = document.getElementById("In Progress"),
+  completed = document.getElementById("Completed"),
+  story = document.getElementById("Story"),
+  bug = document.getElementById("Bug")
+const deletebutton = document.getElementById("delete-button")
+const savebutton = document.getElementById("save-button");
+
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  let tags = ["Frontend","Backend","API","Database","Framework","Testing","UI","UX"]
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search)
+    const username = urlParams.get("username")
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+  get(ref(db,`addMember`)).then((allMember)=>{
+        if (allMember.exists()) {
+            const allMemberVal = allMember.val()
+            const allMemberName = Object.keys(allMemberVal)
+            console.log(allMemberName)
+            allMemberName.forEach((member)=>{
+                let newOption = document.createElement('option');
+                newOption.value = member
+                newOption.textContent = member
+                taskAssigneeElement.appendChild(newOption)
+            })
+        }
+      })
+  const dataRef = ref(db, "productBacklog/" + taskId);
+  const savedTasks = []
+  var task = {}
+
+    get(dataRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log(snapshot.val())
+            task = snapshot.val()
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                savedTasks.push(childData)
+            });
+    }}
+    )
+    .then(()=> console.log(savedTasks))
+    .then(()=> displayTaskDetails(task));
+
+//----------------------------------------------display task detail------------------------------------------------------------------
+function displayTaskDetails(savedTasks){
+    if (taskId !== null && taskId.length >= 0) {
+        const task = {
+          "dateAdded": savedTasks["dateAdded"],
+            "taskAssignee": savedTasks["taskAssignee"],
+            "taskCategory": savedTasks["taskCategory"],
+            "taskDescription": savedTasks["taskDescription"],
+            "taskName": savedTasks["taskName"],
+            "taskPriority": savedTasks["taskPriority"],
+            "taskStage": savedTasks["taskStage"],
+            "taskStatus": savedTasks["taskStatus"],
+            "taskStoryPoints": savedTasks["taskStoryPoints"],
+            "taskTags": savedTasks["taskTags"]
+        } 
+        taskNameElement.textContent = task["taskName"];
+        taskDescriptionElement.textContent = task["taskDescription"];
+        taskPriorityElement.value = task["taskPriority"];
+        storyPointsElement.value = task["taskStoryPoints"];
+        taskStageElement.value = task["taskStage"];
+        taskAssigneeElement.value = task["taskAssignee"];
+        if (task["taskStatus"] == "Not Started"){
+          notStarted.checked = true
+        }
+        else if (task["taskStatus"] == "In Progress"){
+          inProgress.checked = true
+        }
+        else if (task["taskStatus"] == "Completed"){
+          completed.checked=true
+        }
+        if (task["taskCategory"] == "Story"){
+          story.checked = true
+        }
+        else if (task["taskCategory"] == "Bug"){
+          bug.checked = true
+        }
+        try{
+            task["taskTags"].forEach((taskTag)=>{
+                if (taskTag == null){
+                  return;
+                }
+                else {
+                  const tagsPair = ['Frontend','Backend', 'API','Database','Framework','Testing','UI','UX']
+                    if (tagsPair.includes(taskTag)){
+                      tagDisplayList[tagsPair.indexOf(taskTag)].style.display = "block";
+                      tagOptionList[tagsPair.indexOf(taskTag)].checked = true
+                          }
+                      };   
+      
+                        })
+                    
+                
+              
+        }catch{console.log("Empty")}
+    } else {
+        taskNameElement.textContent = "Task not found.";
+    }
+}
+
+//--------------------------------------------------story point-----------------------------------------------------
+increment.addEventListener("click",function(){
+  if (storyPointsElement.value != storyPointsElement.max){
+    storyPointsElement.value = (parseInt(storyPointsElement.value)+1).toString()
+  }
+})
+decrement.addEventListener("click",function(){
+  if (storyPointsElement.value != storyPointsElement.min){
+    storyPointsElement.value = (parseInt(storyPointsElement.value)-1).toString()
+  }
+})
+
+//--------------------------------------------------check tag function-----------------------------------------------------
+function checkTag() {
+  tagOptionList.forEach(tag => {
+    if (tag.checked == true){
+      tagDisplayList[tagOptionList.indexOf(tag)].style.display = "block"
+    }
+    else {
+      tagDisplayList[tagOptionList.indexOf(tag)].style.display = "none"
+    }
+  })}
+const check = setInterval(checkTag,10)
+
+//--------------------------------------------------save button-----------------------------------------------------
+savebutton.addEventListener("click",function(event){
+  event.preventDefault();
+  let taskTag = [];
+        tagOptionList.forEach((tag) => {
+            if (tag.checked){
+                taskTag.push(tag.value)
+            }
+        })
+
+  tags = tags.filter(tag => taskTag.includes(tag));
+//--------------------------------------------------update data-----------------------------------------------------
+const taskDescription = document.querySelector("#task-description").value;
+if (taskDescription == ""){
+  alert("Task Description cannot be empty!")
+}
+else if (taskTag.length == 0){
+  alert("Task must have at least 1 tag!")
+}
+else {
+    update(ref(db, 'productBacklog/' + taskId),
+    {
+      taskAssignee :document.querySelector("#AssigneeList").value,
+      taskPriority :document.querySelector("#priorities").value,
+      taskStage : document.querySelector("#SOT").value,
+      taskStoryPoints : document.querySelector("#storyPoints").value,
+      taskStatus : document.querySelector('input[name="status"]:checked').value,      
+      taskCategory : document.querySelector('input[name="category"]:checked').value,
+      taskDescription : document.querySelector("#task-description").value,
+      taskTags : taskTag
+    })
+
+    .then(() => { window.location.href = `task.html?username=${username}&taskId=${taskId}`});
+
+}})
+deletebutton.addEventListener("click",function(){
+  remove(ref(db,'productBacklog/' + taskId))
+  window.location.href = `prodBacklog.html?username=${username}`
+})
+previousPage.addEventListener("click",function(){
+  window.location.href = `task.html?username=${username}&taskId=${taskId}`
+})
+}
+);
+
+
+//--------------------------------------------------priority colour-----------------------------------------------------
+const prioritiesSelect = document.getElementById("priorities");
+
+    // Function to change the color of the select element
+    function changeSelectColor() {
+      const selectedOption = prioritiesSelect.options[prioritiesSelect.selectedIndex];
+      const color = window.getComputedStyle(selectedOption).color;
+      prioritiesSelect.style.color = color;
+    }
+
+    // Add an event listener to update the select element color on change
+    prioritiesSelect.addEventListener("change", changeSelectColor);
+
+    // Call the changeSelectColor function initially to set the initial color
+    changeSelectColor();
+</script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+  const colorMappings = {
+  "green": "#85682c",
+  "yellow": "#fdf5eb",
+  "orange": "#e1af3b",
+  "red": "#9b7a26",
+  "rgb(133, 104, 44)": "green",
+  "rgb(253, 245, 235)": "yellow",
+  "rgb(225, 175, 59)": "orange",
+  "rgb(155, 122, 38)": "red"
+  };
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+      updatePriorityColor();
+    } else {
+      body.classList.remove("color-blind-friendly");
+      updatePriorityColor();
+    }
+  });
+
+  function updatePriorityColor() {
+    const priorities = document.getElementById("priorities");
+    for (let i = 0; i < priorities.options.length; i++) {
+      const option = priorities.options[i];
+      const currentColor = option.style.color;
+      if (colorMappings[currentColor]) {
+        option.style.color = colorMappings[currentColor];
+      }
+    }
+  }
+</script>
+</body>
+</html>

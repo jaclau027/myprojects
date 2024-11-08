@@ -1,0 +1,424 @@
+body {
+    background-color: #A8CAEA;
+    padding: 20px;
+  }
+.color-blind-friendly {
+  background-color: #DCD6F1;
+
+}
+.white-frame{
+  background-color: white;
+  padding: 20px;
+  margin: 10px;
+}
+
+.light-blue-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+}
+
+.light-blue-card-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+}
+
+.dark-blue-frame {
+    background-color: #6589AA;
+    padding: 20px;
+    margin: 10px;
+    overflow-x: auto; 
+    white-space: nowrap; 
+  }
+  .pink-frame {
+    background-color: #E8CACA;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+  }
+  .green-frame {
+    background-color: #b5dbaf;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+  }
+  .flex {
+    display: flex;
+  }
+  .row {
+    flex-direction: row;
+  }
+  .col {
+    flex-direction: column;
+  }
+
+  .horizontal-scroll {
+    display: inline-flex; 
+    gap: 10px; 
+  }
+
+  .color-blind-friendly .light-blue-frame {
+    background-color: #dcd2f4;
+  }
+
+  .color-blind-friendly .light-blue-card-frame {
+    background-color: #dcd2f4;
+  }
+
+  .color-blind-friendly .dark-blue-frame {
+    background-color: #7d82a8;
+  }
+
+  .color-blind-friendly .pink-frame {
+    background-color: #e2caca;
+  }
+
+  .color-blind-friendly .green-frame {
+    background-color: #e9c9b6;
+  }
+  .card-views {
+    display: grid;
+    gap: 10px;
+  }
+  
+
+  .kanban-card {
+    width: 350px; 
+    background-color: #C5DBF5;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 0; 
+    white-space: normal;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .color-blind-friendly .kanban-card {
+    background-color: #dcd2f4;
+  }
+
+.header-menu-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  header {
+    margin-left: 20px; 
+  }
+
+
+  .button-container {
+    text-align: right; 
+    margin-top: 5px; 
+  }
+
+  
+.add-button {
+    background-color: darkblue;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 19px;
+    margin: 5px;
+    width: 70px;
+    text-align: center;
+    line-height: center; 
+    margin-left: auto;
+    display: block;
+}
+.color-blind-friendly .add-button{
+  background-color: #0e2a45;
+  color: white;
+}
+
+  .menu-bar {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+    padding: 3px;
+    z-index: 2;
+  }
+
+
+  .previous-page {
+    padding: 10px;
+  }
+
+
+.previous-page a {
+  background-color: none;
+  color: none;
+  border:none;
+  cursor: pointer;
+  position: inline;
+}
+
+
+.menu-bar button {
+    background-color: gray;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+.color-blind-friendly .menu-bar button {
+  background-color: #887c80; /* Change menu button background color to dark gray */
+  color: #ffffff; /* Change menu button text color to white */
+}
+.menu-items {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    padding: 5px;
+}
+.color-blind-friendly .menu-items {
+  background-color: #887c80; /* Change menu button background color to dark gray */
+  color: #ffffff; /* Change menu button text color to white */
+}
+.menu-items a {
+  display: block;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.menu-bar:hover .menu-items {
+    display: block;
+}
+
+
+.card {
+    position: relative;
+    border: 1px solid #E3F6FC;
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .cardview {
+    background-color: #E3F6FC;
+    border: 1px solid #E3F6FC;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative; 
+    margin-bottom: 10px;
+  }
+
+  .color-blind-friendly .card {
+    background-color: #fceefa;
+  }
+
+  .color-blind-friendly .cardview {
+    background-color: #fceefa;
+  }
+  .cardview a {
+    text-decoration: none;
+    color: black;
+  }
+
+  .task-name {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .priority, .story-points {
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  .tags-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-height: 100%; 
+    overflow-y: auto; 
+  }
+
+  .tags {
+    background-color: #4472c4; 
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 16px;
+
+    display: block;
+  } 
+
+
+  .tags.tags1{
+    background-color: #AF4A93; 
+    color: black;
+  }
+
+  .tags.tags1::before {
+    content: "FrontEnd"; 
+  }
+
+  .tags.tags2{
+    background-color: #EE8306; 
+    color: black;
+  }
+
+  .tags.tags2::before {
+    content: "BackEnd"; 
+  }
+
+  .tags.tags3{
+    background-color: #DFCC22;
+    color: black;
+  }
+
+  .tags.tags3::before {
+    content: "API"; 
+  }
+
+  .tags.tags4{
+    background-color: #3EC133; 
+    color: black;
+  }
+  .tags.tags4::before {
+    content: "Database";
+  }
+ 
+  .tags.tags5{
+    background-color: #7eb0fa; 
+    color: black;
+  }
+
+  .tags.tags5::before {
+    content: "Framework"; 
+  }
+
+  .tags.tags6{
+    background-color: #9747FF;
+    color: black;
+  }
+
+  .tags.tags6::before {
+    content: "Testing";
+  }
+
+  .tags.tags7{
+    background-color: #959AA1; 
+    color: black;
+  }
+
+  .tags.tags7::before {
+    content: "UI"; 
+  }
+
+  .tags.tags8{
+    background-color: #964B00; 
+    color: black;
+  }
+
+  .tags.tags8::before {
+    content: "UX"; 
+  }
+  .color-blind-friendly .tags.tags1{
+    background-color: #6d6d86; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tags.tags2{
+    background-color: #c19732; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags3{
+    background-color: #f5c150; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags4{
+    background-color: #caa154; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags5{
+    background-color: #91aaf5; /* Change menu button background color to dark gray */
+  }
+  .color-blind-friendly .tags.tags6{
+    background-color: #3477c7; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags7{
+    background-color: #a095a0; /* Change menu button text color to white */
+  }
+  
+  .color-blind-friendly .tags.tags8{
+    background-color: #755c1b; /* Change menu button text color to white */
+  }
+  
+
+        /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .onoffbutton {
+    text-align: right;
+    display: block;
+  }
+
+
+

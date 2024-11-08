@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task</title>
+  <link rel="stylesheet" href="task.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+  <div class="white-frame">
+    <div class="previous-page">
+      <div class = "previous-button" id = "previous-page">
+        <img src="../Product_Backlog/previouspage.png" width=30px height = 30px>
+      </div>
+    </div>
+    <div class="menu-bar">
+      <button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+      <div class="menu-items" id="menu-items">
+        <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+        <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+        <a id="teamManagement" style="cursor: pointer;">Team management</a>
+        <a id="profile" style="cursor: pointer;">Profile</a>
+        <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+        <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+      </div>
+    </div>
+
+    <div class="task-frame flex col">
+      <h1 id="taskNameHeader"></h1>
+      <div class="taskview">
+        <div class="flex col">
+          <div class="task-info">
+            <span class="info-label">Assignee:</span>
+            <span class="info-value" id="asignees"></span>
+          </div>
+
+          <div class="priority">
+            <span class="text">Priority: </span>
+            <span class="text" id="taskPriority"></span>
+          </div>
+
+          <div class="task-info">
+            <span class="info-label">Stage of task:</span>
+            <span class="text" id="stages"></span>
+          </div>
+        </div>
+
+        <div class="flex col">
+          <div class="story-points">
+            <span class="text">Story Points: </span>
+            <span class="text" id="storyPoints">...</span>
+          </div>
+
+          <div class="status">
+            <span class="text">Status: </span>
+            <span class="text" id="status">...</span>
+          </div>
+
+          <div class="category">
+            <span class="text">Task Type: </span>
+            <span class="text" id="category">...</span>
+          </div>
+        </div>
+
+        <div class="tags-container">
+          <div class="tags tags1" id="FE">Frontend</div>
+          <div class="tags tags2" id="BE">Backend</div>
+          <div class="tags tags3" id="API">API</div>
+          <div class="tags tags4" id="DB">Database</div>
+          <div class="tags tags5" id="FW">Framework</div>
+          <div class="tags tags6" id="TEST">Testing</div>
+          <div class="tags tags7" id="UI">UI</div>
+          <div class="tags tags8" id="UX">UX</div>
+        </div>
+      </div>
+
+      <div class="task-description">
+        <div class="text">Task description:</div>
+        <textarea rows="8" columns="50" class="description text" id="task-description" value="..."></textarea>
+      </div>
+
+      <div class="taskview">
+        <div class="accumulationtime">
+          <span class="text">Accumulation of time: </span>
+          <span class="text" id="accumulation-time"></span>
+          <span class="text"> hrs</span>
+        </div>
+      </div>
+
+      <div class="green-frame">
+        <h2>Total Time Spent</h2>
+        <canvas id="lineChart2"></canvas>
+      </div>
+
+    </div>
+      <div class="button-container">
+        <div id="edit-button" class="edit-button">Edit</div>
+        <!-- <a href="editTask.html" id="edit-button" class="edit-button">Edit</a> -->
+        <a style="cursor: pointer;" id="delete-button" class="delete-button">Delete</a>
+      </div>
+
+ 
+    <br>
+    
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    //--------------------------------------------------DOWNLOAD CHART.JS-----------------------------------------------------------------------
+    </script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, orderByChild,remove,update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+
+// taskdetails.js (for taskdetails.html)
+const
+previouspage = document.getElementById("previous-page"),
+FE = document.getElementById("FE"),
+BE = document.getElementById("BE"),
+API = document.getElementById("API"),
+DB = document.getElementById("DB"),
+FW = document.getElementById("FW"),
+TEST = document.getElementById("TEST"),
+UI = document.getElementById("UI"),
+UX = document.getElementById("UX"),
+tagDisplayList = [FE,BE,API,DB,FW,TEST,UI,UX],
+category = document.getElementById('category'),
+savedTasks = []
+const taskNameElement = document.getElementById("taskNameHeader");
+const taskDescriptionElement = document.getElementById("task-description");
+const taskPriorityElement = document.getElementById("taskPriority");
+const storyPointsElement = document.getElementById("storyPoints");
+const taskAssigneeElement = document.getElementById("asignees");
+const taskStageElement = document.getElementById("stages");
+const taskStatusElement = document.getElementById("status");
+const taskTagsElement = document.getElementById("tags");
+const editbutton = document.getElementById("edit-button")
+const saveTaskButton = document.getElementById("saveTaskButton");
+const accumulationOfTime = document.getElementById("accumulation-time")
+const logTimeSpentDataArray = [];
+const duration = [];
+//----------------------------------------------get task id------------------------------------------------------------------
+const urlParams = new URLSearchParams(window.location.search);
+const sprintId = urlParams.get("sprintId");
+const taskId = urlParams.get("taskId");
+document.addEventListener("DOMContentLoaded", function () {
+  const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const username = urlParams.get("username")
+    document.getElementById("previous-page").addEventListener("click",function(){
+      window.location.href = `scrumboard.html?username=${username}`
+    })
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+  previouspage.addEventListener("click",function(){
+    window.location.href = `sprint.html?username=${username}&sprintId=${sprintId}`
+  })
+
+//----------------------------------------------get data------------------------------------------------------------------
+    const dataRef = ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`);
+    var task ={}
+
+    get(dataRef).then((snapshot) => {
+        if (snapshot.exists()) {
+
+            const log_Time_Spent = snapshot.val()["logTimeSpent"];
+            for(const ele in snapshot.val()["logTimeSpent"]){
+              logTimeSpentDataArray.push(log_Time_Spent[ele])
+            }
+
+            get(ref(db,`newsprint/${sprintId}`)).then((sprint)=> {
+            var[startYear,startMonth,startDay] = sprint.val()["startDate"].split("-");
+            var[endYear,endMonth,endDay] = sprint.val()["endDate"].split("-");
+            startYear = parseInt(startYear)
+            startMonth = parseInt(startMonth)
+            startDay = parseInt(startDay)
+            endYear = parseInt(endYear)
+            endMonth = parseInt(endMonth)
+            endDay = parseInt(endDay)
+            if (startYear==endYear){
+              if (startMonth == endMonth){
+                for (let day = startDay; day<=endDay; day++){
+                  const dateString = [startYear, startMonth, day].join("-")
+                  duration.push(dateString)
+                }
+              }
+          }}
+          )
+          .then(()=>{            
+            console.log(snapshot.val())
+            task = snapshot.val()
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                savedTasks.push(childData)
+                displayTaskDetails(task)
+            });})
+    }}
+    )
+
+//----------------------------------------------display task detail------------------------------------------------------------------
+function displayTaskDetails(savedTasks){
+    if (taskId !== null && taskId.length >= 0) {
+        const task = {
+          "dateAdded": savedTasks["dateAdded"],
+            "taskAssignee": savedTasks["taskAssignee"],
+            "taskCategory": savedTasks["taskCategory"],
+            "taskDescription": savedTasks["taskDescription"],
+            "taskName": savedTasks["taskName"],
+            "taskPriority": savedTasks["taskPriority"],
+            "taskStage": savedTasks["taskStage"],
+            "taskStatus": savedTasks["taskStatus"],
+            "taskStoryPoints": savedTasks["taskStoryPoints"],
+            "taskTags": savedTasks["taskTags"],
+            "accumulationOfTime":savedTasks["accumulationOfTime"]
+        } 
+        taskNameElement.textContent = task["taskName"];
+        taskDescriptionElement.value = task["taskDescription"];
+        if (task["taskPriority"] == "Low"){
+          taskPriorityElement.style.color = "green";
+        }
+        else if (task["taskPriority"] == "Medium"){
+          taskPriorityElement.style.color = "yellow"
+        }
+        else if (task["taskPriority"] == "Important"){
+          taskPriorityElement.style.color = "orange"
+        }
+        else if (task["taskPriority"] == "Urgent"){
+          taskPriorityElement.style.color = "red"
+        }
+        taskPriorityElement.textContent = task["taskPriority"];
+        storyPointsElement.textContent = task["taskStoryPoints"];
+        taskStageElement.textContent = task["taskStage"];
+        taskAssigneeElement.textContent = task["taskAssignee"];
+        taskStatusElement.textContent = task["taskStatus"];
+        category.textContent = task["taskCategory"];
+        accumulationOfTime.textContent=task["accumulationOfTime"]
+        try{
+            task["taskTags"].forEach((taskTag)=>{
+                if (taskTag == null){
+                  return;
+                }
+                else {
+                    for (const tag of tagDisplayList){
+                        if (taskTag == tag.textContent){
+                            console.log(tag.textContent)
+                            tag.style.display = "block";
+                            break;
+                        }
+                    }
+                }
+              })
+        }catch{console.log("Empty")}
+    } else {
+        taskNameElement.textContent = "Task not found.";
+    }
+
+    const yValues = [];
+    const dateSet = new Set(duration);
+
+    duration.forEach(date => {
+      // Check if the date exists in logTimeSpentDataArray
+      const timeData = logTimeSpentDataArray.find(time => time.date === date);
+
+      if (timeData) {
+        yValues.push(timeData.timeSpent);
+      } else {
+        yValues.push(0);
+      }
+    });
+
+    logTimeSpentDataArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+    for (let i = 1; i < yValues.length; i++){
+        yValues[i] = parseFloat(yValues[i]) + parseFloat(yValues[i-1])
+      }
+
+    var data = {
+      labels: duration,
+      datasets: [{
+        label: "Total hour spent",
+        borderColor: "black",
+        data: yValues,
+        fill: false,
+        tension: 0
+    }]
+    }
+
+    generateChart(data);
+}
+
+// ------------------------------------------ generate view chart------------------------------------------------------------------------
+function generateChart(data){
+      var ctx = document.getElementById('lineChart2').getContext('2d');
+      var lineChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Date' // Set the X-axis label
+        }
+      }],
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Total Time Spent' // Set the Y-axis label
+        }
+      }]
+    }
+  }
+    });}
+
+//----------------------------------------------edit button------------------------------------------------------------------
+
+    editbutton.addEventListener("click",function(event){
+        event.preventDefault()
+        window.location.href=`editTask.html?username=${username}&sprintId=${sprintId}&taskId=${taskId}`
+    })
+    const deletebutton = document.getElementById("delete-button")
+    deletebutton.addEventListener("click",function(){
+  remove(ref(db,`newsprint/${sprintId}/selectedTasks/${taskId}`))
+  window.location.href = `sprint.html?username=${username}&sprintId=${sprintId}`
+})
+});
+</script>
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+  const colorMappings = {
+  "green": "#85682c",
+  "yellow": "#fdf5eb",
+  "orange": "#e1af3b",
+  "red": "#9b7a26",
+  "rgb(133, 104, 44)": "green",
+  "rgb(253, 245, 235)": "yellow",
+  "rgb(225, 175, 59)": "orange",
+  "rgb(155, 122, 38)": "red"
+  };
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+      updatePriorityColor();
+    } else {
+      body.classList.remove("color-blind-friendly");
+      updatePriorityColor();
+    }
+  });
+
+  function updatePriorityColor() {
+    const taskPriorityElement = document.getElementById("taskPriority");
+    const currentColor = taskPriorityElement.style.color;
+      if (colorMappings[currentColor]) {
+        taskPriorityElement.style.color = colorMappings[currentColor];
+      }
+  }
+</script>
+
+</body>
+</html>

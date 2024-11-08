@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".AddEvent">
+
+  <TextView
+      android:id="@+id/textView13"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="154dp"
+      android:layout_marginTop="53dp"
+      android:text="Event Form"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_begin="80dp" />
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_end="56dp" />
+
+  <androidx.constraintlayout.widget.Barrier
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="top"
+      app:constraint_referenced_ids="saveEventButton" />
+
+  <Button
+      android:id="@+id/saveEventButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="144dp"
+      android:layout_marginTop="72dp"
+      android:onClick="saveButtonClick"
+      android:text="Save Event"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/switch2" />
+
+  <androidx.constraintlayout.widget.Barrier
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="left"
+      app:constraint_referenced_ids="textView14,textView15,textView16,autoCompleteTextView2,editTextCategoryId,editTextEventName,editTextTickets,textView17,switch2" />
+
+  <TextView
+      android:id="@+id/textView14"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="111dp"
+      android:text="EventId"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/textView15"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="19dp"
+      android:text="CategoryId"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/editTextEventName" />
+
+  <TextView
+      android:id="@+id/textView16"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="24dp"
+      android:text="Event Name"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView2" />
+
+  <AutoCompleteTextView
+      android:id="@+id/autoCompleteTextView2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="11dp"
+      android:text="Auto-generated Id"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+  <EditText
+      android:id="@+id/editTextCategoryId"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="16dp"
+      android:ems="10"
+      android:hint="Enter category Id here"
+      android:inputType="text"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+  <EditText
+      android:id="@+id/editTextEventName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="13dp"
+      android:ems="10"
+      android:hint="Enter event name here"
+      android:inputType="text"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+  <EditText
+      android:id="@+id/editTextTickets"
+      android:layout_width="246dp"
+      android:layout_height="46dp"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="16dp"
+      android:ems="10"
+      android:hint="Enter tickets available here"
+      android:inputType="number"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+  <TextView
+      android:id="@+id/textView17"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="19dp"
+      android:text="Tickets Available"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/editTextCategoryId" />
+
+  <Switch
+      android:id="@+id/switch2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="56dp"
+      android:layout_marginTop="10dp"
+      android:text="is Active ?"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/editTextTickets" />
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_end="206dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

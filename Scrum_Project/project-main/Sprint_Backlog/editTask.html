@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task</title>
+  <link rel="stylesheet" href="editTask.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+  <div class="white-frame">
+    <div class="previous-page" id="previous-page" style="cursor: pointer;">
+      <img src="../Product_Backlog/previouspage.png" width=30px height = 30px>
+    </div>
+    <div class="menu-bar">
+      <button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+      <div class="menu-items" id="menu-items">
+        <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+        <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+        <a id="teamManagement" style="cursor: pointer;">Team management</a>
+        <a id="profile" style="cursor: pointer;">Profile</a>
+        <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+        <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+      </div>
+    </div>
+
+    <div class="task-frame flex col">
+      <div class="task-name" id="task-name">Task name</div>
+      <div class="taskview">
+        <div class="flex col">
+          <div class="assignee">
+            <span class="text">Assignee: </span>
+            <select name="team-member" id="AssigneeList">
+            </select>
+          </div>
+          <div class="priority">
+            <span class="text">Priority: </span>
+            <select name="priority" id="priorities">
+                <option value="Low" style="color: green;">Low</option>
+                <option value="Medium" style="color: yellow;">Medium</option>
+                <option value="Important" style="color: orange;">Important</option>
+                <option value="Urgent" style="color: red;">Urgent</option>
+            </select>
+          </div>
+          <div class="stage-of-task">
+            <span class="text">Stage of task: </span>
+            <select name="Stage-of-task" id="SOT">
+                <option value="Planning">Planning</option>
+                <option value="Development">Development</option>
+                <option value="Testing">Testing</option>
+                <option value="Integration">Integration</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex col">
+          <div class="story-points">
+            <span class="text">Story Points: </span>
+            <button class="decrement-button" id="decrement">-</button>
+            <input type="number" class="input-field" id="storyPoints" value="1" min="1" max="10" disabled>
+            <button class="increment-button" id="increment">+</button>
+          </div>
+          <div class="status">
+            <span class="text">Status: </span>
+            <input type="radio" id="Not Started" name="status" value="Not Started">
+            <label for="Not Started"> Not Started </label>
+            <input type="radio" id="In Progress" name="status" value="In Progress">
+            <label for="In Progress"> In Progress </label>
+            <input type="radio" id="Completed" name="status" value="Completed">
+            <label for="Completed"> Completed</label>
+          </div>
+          <div class="category">
+            <span class="text">Task Type: </span>
+            <input type="radio" id="Story" name="category" value="Story">
+            <label for="Story"> Story </label>
+            <input type="radio" id="Bug" name="category" value="Bug">
+            <label for="Bug"> Bug </label>
+          </div>
+        </div>
+        <div class="tags-container">
+          <div class="tags tags1" id="FE"></div>
+          <div class="tags tags2" id="BE"></div>
+          <div class="tags tags3" id="API"></div>
+          <div class="tags tags4" id="DB"></div>
+          <div class="tags tags5" id="FW"></div>
+          <div class="tags tags6" id="TEST"></div>
+          <div class="tags tags7" id="UI"></div>
+          <div class="tags tags8" id="UX"></div>
+        </div>
+      </div>
+      <div class="task-description">
+        <div class="text">Task description:</div>
+        <textarea rows="8" columns="50" class="description text" id="task-description" value="..."></textarea>
+      </div>
+      <div class="accumulatetime">
+        <div class="log-time-spent">
+          <div class="text">Log time spent:</div>
+        </div>
+
+        <div class="table-button-container">
+          <div class="table-container">
+            <div class="tablebg">
+              <table style="display: block;">
+                <tr>
+                  <td>Date</td>
+                  <td><input type="date" id="date-time-spent"></td>
+                </tr>
+                <tr>
+                  <td>Start</td>
+                  <td><input type="time" id="start-time-spent"></td>
+                </tr>
+                <tr>
+                  <td>End</td>
+                  <td><input type="time" id="end-time-spent"></td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="add-button-container">
+              <div id="add-button" class="add-button">Add</div>
+            </div>
+          </div>  
+        </div>
+
+        <br>
+
+        <div class="taskview">
+          <div class="accumulationtime">
+            <span class="text">Accumulation of time: </span>
+            <span class="text" id="accumulation-time"></span>
+            <span class="text"> hrs</span>
+          </div>
+        </div>
+
+        <div class="green-frame">
+          <h2>Total Time Spent</h2>
+          <canvas id="lineChart2"></canvas>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+ 
+    <br>
+    <div class="button-container">
+        <a href="task.html" id="save-button" class="save-button">save</a>
+        <div class="tag-bar" id="tag-bar">
+            <div class="tag-menu" id="tag-menu">
+                <label class="tag1" for="FEoption"><input type="checkbox" id="FEoption" name="tag" value="Frontend">Frontend</label>
+                <label class="tag2" for="BEoption"><input type="checkbox" id="BEoption" name="tag" value="Backend">Backend</label>
+                <label class="tag3" for="APIoption"><input type="checkbox" id="APIoption" name="tag" value="API">API</label>
+                <label class="tag4" for="DBoption"><input type="checkbox" id="DBoption" name="tag" value="Database">Database</label>
+                <label class="tag5" for="FWoption"><input type="checkbox" id="FWoption" name="tag" value="Framework">Framework</label>
+                <label class="tag6" for="TESToption"><input type="checkbox" id="TESToption" name="tag" value="Testing">Testing</label>
+                <label class="tag7" for="UIoption"><input type="checkbox" id="UIoption" name="tag" value="UI">UI</label>
+                <label class="tag8" for="UXoption"><input type="checkbox" id="UXoption" name="tag" value="UX">UX</label>
+            </div>
+            <div class="tag-button" id="tag-button">Tag</div>
+        </div>
+        <div id="delete-button" class="delete-button">Delete</div>
+    </div>
+    
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+//--------------------------------------------------DOWNLOAD CHART.JS-----------------------------------------------------------------------
+</script>
+
+<script type="module">
+//--------------------------------------------------EDIT-----------------------------------------------------------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, update, push, orderByChild,remove} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+
+const 
+  FEoption = document.getElementById("FEoption"),
+  BEoption = document.getElementById("BEoption"),
+  APIoption = document.getElementById("APIoption"),
+  DBoption = document.getElementById("DBoption"),
+  FWoption = document.getElementById("FWoption"),
+  TESToption = document.getElementById("TESToption"),
+  UIoption = document.getElementById("UIoption"),
+  UXoption = document.getElementById("UXoption"),
+  tagOptionList = [FEoption,BEoption,APIoption,DBoption,FWoption,TESToption,UIoption,UXoption],
+  FE = document.getElementById("FE"),
+  BE = document.getElementById("BE"),
+  API = document.getElementById("API"),
+  DB = document.getElementById("DB"),
+  FW = document.getElementById("FW"),
+  TEST = document.getElementById("TEST"),
+  UI = document.getElementById("UI"),
+  UX = document.getElementById("UX"),
+  increment = document.getElementById("increment"),
+  decrement = document.getElementById("decrement"),
+  tagDisplayList = [FE,BE,API,DB,FW,TEST,UI,UX],
+  urlParams = new URLSearchParams(window.location.search),
+  sprintId = urlParams.get("sprintId"),
+  taskId = urlParams.get("taskId"),
+  previousPage = document.getElementById("previous-page")
+  const taskNameElement = document.getElementById("task-name");
+const taskDescriptionElement = document.getElementById("task-description");
+const taskPriorityElement = document.getElementById("priorities");
+const storyPointsElement = document.getElementById("storyPoints");
+const taskAssigneeElement = document.getElementById("AssigneeList");
+const taskStageElement = document.getElementById("SOT");
+const notStarted = document.getElementById("Not Started"),
+  inProgress = document.getElementById("In Progress"),
+  completed = document.getElementById("Completed"),
+  story = document.getElementById("Story"),
+  bug = document.getElementById("Bug")
+const deletebutton = document.getElementById("delete-button")
+const savebutton = document.getElementById("save-button");
+const addbutton = document.getElementById("add-button");
+const accTime = document.getElementById("accumulation-time");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const logTimeSpentArray = [];
+const timeSpentAccordingToAssigneeArray = [];
+let tags = ["Frontend","Backend","API","Database","Framework","Testing","UI","UX"]
+
+//----------------------------------------------loading------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+    const username = urlParams.get("username")
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+  get(ref(db,`addMember`)).then((allMember)=>{
+        if (allMember.exists()) {
+            const allMemberVal = allMember.val()
+            const allMemberName = Object.keys(allMemberVal)
+            console.log(allMemberName)
+            allMemberName.forEach((member)=>{
+                let newOption = document.createElement('option');
+                newOption.value = member
+                newOption.textContent = member
+                taskAssigneeElement.appendChild(newOption)
+            })
+        }
+      })
+  const dataRef = ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`);
+  const savedTasks = [];
+  const logTimeSpentDataArray = [];
+  const duration = [];
+  const currentDate = new Date();
+  var task = {}
+
+  get(dataRef).then((snapshot) => {
+      if (snapshot.exists()) {
+
+          const log_Time_Spent = snapshot.val()["logTimeSpent"];
+          for(const ele in snapshot.val()["logTimeSpent"]){
+            logTimeSpentDataArray.push(log_Time_Spent[ele])
+          }
+
+          get(ref(db,`newsprint/${sprintId}`)).then((sprint)=> {
+            var[startYear,startMonth,startDay] = sprint.val()["startDate"].split("-");
+            var[endYear,endMonth,endDay] = sprint.val()["endDate"].split("-");
+            startYear = parseInt(startYear)
+            startMonth = parseInt(startMonth)
+            startDay = parseInt(startDay)
+            endYear = parseInt(endYear)
+            endMonth = parseInt(endMonth)
+            endDay = parseInt(endDay)
+            if (startYear==endYear){
+              if (startMonth == endMonth){
+                for (let day = startDay; day<=endDay; day++){
+                  const dateString = [startYear, startMonth, day].join("-")
+                  duration.push(dateString)
+                }
+              }
+          }}
+          )
+  
+          .then(() => {          
+            const data = snapshot.val()
+          task = data
+          console.log(task)
+          snapshot.forEach((childSnapshot) => {
+              const childData = childSnapshot.val();
+              savedTasks.push(childData)
+              displayTaskDetails(task)
+          });})
+  }}
+  )
+
+//----------------------------------------------display task detail------------------------------------------------------------------
+  function displayTaskDetails(savedTasks){
+      if (taskId !== null && taskId.length >= 0) {
+          const task = {
+              "dateAdded": savedTasks["dateAdded"],
+              "taskAssignee": savedTasks["taskAssignee"],
+              "taskCategory": savedTasks["taskCategory"],
+              "taskDescription": savedTasks["taskDescription"],
+              "taskName": savedTasks["taskName"],
+              "taskPriority": savedTasks["taskPriority"],
+              "taskStage": savedTasks["taskStage"],
+              "taskStatus": savedTasks["taskStatus"],
+              "taskStoryPoints": savedTasks["taskStoryPoints"],
+              "taskTags": savedTasks["taskTags"],
+              "accumulationOfTime":savedTasks["accumulationOfTime"]
+          } 
+          taskNameElement.textContent = task["taskName"];
+          taskDescriptionElement.textContent = task["taskDescription"];
+          taskPriorityElement.value = task["taskPriority"];
+          storyPointsElement.value = task["taskStoryPoints"];
+          taskStageElement.value = task["taskStage"];
+          taskAssigneeElement.value = task["taskAssignee"];
+          accTime.textContent = task["accumulationOfTime"]
+          if (task["taskStatus"] == "Not Started"){
+            notStarted.checked = true
+          }
+          else if (task["taskStatus"] == "In Progress"){
+            inProgress.checked = true
+          }
+          else if (task["taskStatus"] == "Completed"){
+            completed.checked=true
+          }
+          if (task["taskCategory"] == "Story"){
+            story.checked = true
+          }
+          else if (task["taskCategory"] == "Bug"){
+            bug.checked = true
+          }
+          try{
+              task["taskTags"].forEach((taskTag)=>{
+                  if (taskTag == null){
+                    return;
+                  }
+                  else {
+                    const tagsPair = ['Frontend','Backend', 'API','Database','Framework','Testing','UI','UX']
+                      if (tagsPair.includes(taskTag)){
+                        tagDisplayList[tagsPair.indexOf(taskTag)].style.display = "block";
+                        tagOptionList[tagsPair.indexOf(taskTag)].checked = true
+                            }
+                        };   
+                          })
+          }catch{console.log("Empty")}
+      } else {
+          taskNameElement.textContent = "Task not found.";
+      }
+
+      viewChartFunction();
+  }
+
+// ------------------------------------------ add time in chart ------------------------------------------------------------------------
+function trialVersionFunction(){
+      const yValues = [];
+      const dateSet = new Set(duration);
+      logTimeSpentArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+      console.log(logTimeSpentDataArray)
+      console.log(logTimeSpentArray)
+
+      duration.forEach(date => {
+        // Check if the date exists in logTimeSpentDataArray
+        const timeData = logTimeSpentDataArray.find(time => time.date === date);
+        const timeData2 = logTimeSpentArray.find(time => time.date === date);
+
+        if (timeData && timeData2){
+          yValues.push(timeData2.timeSpent)
+        }
+        else if (timeData) {
+          console.log(timeData)
+          yValues.push(timeData.timeSpent);
+        } else if (timeData2){// find the added value (not saved yet)
+          yValues.push(timeData2.timeSpent);
+        }
+        else{
+          yValues.push(0)
+        }
+      });
+
+      for (let i = 1; i < yValues.length; i++){
+        yValues[i] = parseFloat(yValues[i]) + parseFloat(yValues[i-1])
+      }
+      console.log(yValues)
+      // for(let i=0; i<yValues.length ;i++){
+      //   console.log(yValues[i])
+      //   if(yValues[i] === 0 && i !== 0){
+      //     yValues[i] = yValues[i-1]
+      //   if(yValues[i] < yValues[i-1] && i !== 0){
+      //     yValues[i] = yValues[i] + yValues[i-1]
+      //     console.log(yValues[i])
+      //   }
+      //   }
+      // }
+      var data = {
+        labels: duration,
+        datasets: [{
+          label: "Total hour spent",
+          borderColor: "black",
+          data: yValues,
+          fill: false,
+          tension: 0
+      }]
+      }
+
+      generateChart(data);
+}
+// ------------------------------------------ view chart function------------------------------------------------------------------------
+function viewChartFunction(){
+      const yValues = [];
+ 
+      const dateSet = new Set(duration);
+
+      duration.forEach(date => {
+        // Check if the date exists in logTimeSpentDataArray
+        const timeData = logTimeSpentDataArray.find(time => time.date === date);
+
+        if (timeData) {
+          // If found, push the timeSpent value
+          yValues.push(timeData.timeSpent);
+        } else {
+          // If not found, push 0
+          yValues.push(0);
+        }
+      });
+
+      for (let i = 1; i < yValues.length; i++){
+        yValues[i] = parseFloat(yValues[i]) + parseFloat(yValues[i-1])
+      }
+      
+      logTimeSpentDataArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      var data = {
+        labels: duration,
+        datasets: [{
+          label: "Total hour spent",
+          borderColor: "black",
+          data: yValues,
+          fill: false,
+          tension: 0
+      }]
+      }
+
+      generateChart(data);
+}
+// ------------------------------------------ generate view chart------------------------------------------------------------------------
+function generateChart(data){
+      var ctx = document.getElementById('lineChart2').getContext('2d');
+      var lineChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Date' // Set the X-axis label
+        }
+      }],
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Total Time Spent' // Set the Y-axis label
+        }
+      }]
+    }
+  }
+    });}
+// ------------------------------------------ add button for log time spent------------------------------------------------------------------------
+  addbutton.addEventListener("click",function(){
+    const date1 = document.getElementById("date-time-spent")
+    const startTime = document.getElementById("start-time-spent");
+    const endTime = document.getElementById("end-time-spent");
+    const hour_startTime = startTime.value.split(":")[0]
+    // console.log(hour_startTime)
+    const minute_startTime = startTime.value.split(":")[1]/60*100
+    // console.log(minute_startTime)
+    const hour_endTime = endTime.value.split(":")[0];
+    // console.log(hour_endTime)
+    const minute_endTime = endTime.value.split(":")[1]/60*100;
+    const timeSpent1 = parseFloat(`${hour_endTime}.${minute_endTime}`) - parseFloat(`${hour_startTime}.${minute_startTime}`);
+    let timeSpent2 = timeSpent1.toFixed(2);
+    let timeSpent4 = timeSpent1.toFixed(2)
+    const timeSpent3 = timeSpent1.toFixed(2);
+    let flag = false
+    let flag2 = false
+
+    if (timeSpent2 >= 0){
+      const selectedDate = date1.value;
+      const timeSpentRef = ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}/logTimeSpent/${selectedDate}`);
+      const timeSpentRefAccordingToAssignee = ref(db,`newsprint/${sprintId}/taskAssignees/${taskAssigneeElement.value}`)
+      if (duration.includes(selectedDate)){
+        if (currentDate > new Date(selectedDate)){
+          get(timeSpentRef)
+          .then((snapshot) => {
+            let existingTimeSpent = 0;
+            if (snapshot.exists()) {// check if the date has existed or not
+              existingTimeSpent = snapshot.val().timeSpent
+              timeSpent2 = parseFloat(existingTimeSpent) + parseFloat(timeSpent2);
+            }
+            logTimeSpentArray.forEach((logTime)=>{
+              if(selectedDate === logTime.date){
+                logTime.timeSpent = parseFloat(timeSpent2) + parseFloat(logTime.timeSpent)
+                flag = true
+              }
+            })
+            if (flag === false){
+              const logTimeSpent = {
+              date: selectedDate,
+              timeSpent: timeSpent2
+          }
+          logTimeSpentArray.push(logTimeSpent)
+          console.log(logTimeSpentArray)
+            }
+          accTime.textContent = parseFloat(accTime.textContent) + parseFloat(timeSpent3);
+          }
+        
+        ).then(() => {
+          get(timeSpentRefAccordingToAssignee).then((assignee)=>{
+          if (assignee.exists()){
+          if (assignee.val()[selectedDate] != null) {
+            let existingTimeSpent = parseFloat(assignee.val()[selectedDate])
+            timeSpent4 = existingTimeSpent + parseFloat(timeSpent4)
+          }}
+          timeSpentAccordingToAssigneeArray.forEach((logTime)=>{
+            if (logTime[selectedDate] != null){
+              logTime[selectedDate] = parseFloat(timeSpent4) + parseFloat(logTime.timeSpent)
+              flag2 = true
+            }
+          })
+          if (flag2 === false){
+              const logTimeSpent = {
+              [selectedDate]: timeSpent4
+          }
+          timeSpentAccordingToAssigneeArray.push(logTimeSpent)
+          console.log(timeSpentAccordingToAssigneeArray)
+        }})
+        })
+          .then(() => {trialVersionFunction()})
+      }
+
+        
+        else{
+          alert('This day is unavailable now.')
+        }
+      }
+      else{
+        alert('Please enter the date within the start and end date')
+      }
+    }
+    else{
+      alert('Please enter a valid input')
+    }
+    date1.value = ""
+    startTime.value = ""
+    endTime.value = ""
+ })
+//--------------------------------------------------increment/decrement button-----------------------------------------------------
+increment.addEventListener("click",function(){
+  if (storyPointsElement.value != storyPointsElement.max){
+    storyPointsElement.value = (parseInt(storyPointsElement.value)+1).toString()
+  }
+})
+decrement.addEventListener("click",function(){
+  if (storyPointsElement.value != storyPointsElement.min){
+    storyPointsElement.value = (parseInt(storyPointsElement.value)-1).toString()
+  }
+})
+
+//--------------------------------------------------check tag function-----------------------------------------------------
+function checkTag() {
+  tagOptionList.forEach(tag => {
+    if (tag.checked == true){
+      tagDisplayList[tagOptionList.indexOf(tag)].style.display = "block"
+    }
+    else {
+      tagDisplayList[tagOptionList.indexOf(tag)].style.display = "none"
+    }
+  })}
+const check = setInterval(checkTag,10)
+
+//--------------------------------------------------save button-----------------------------------------------------
+savebutton.addEventListener("click",function(){
+
+  event.preventDefault();
+  let taskTag = [];
+        tagOptionList.forEach((tag) => {
+            if (tag.checked){
+                taskTag.push(tag.value)
+            }
+        })
+
+  tags = tags.filter(tag => taskTag.includes(tag));
+  
+
+  logTimeSpentArray.forEach((logTimeSpent)=>{
+    set(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}/logTimeSpent/${logTimeSpent.date}`),logTimeSpent)// Setting reference, store log time spent (date and time) in the ref
+  })
+  update(ref(db,`newsprint/${sprintId}/taskAssignees/${taskAssigneeElement.value}`),{
+    name: taskAssigneeElement.value
+  })
+  timeSpentAccordingToAssigneeArray.forEach((logTimeSpent)=>{
+    update(ref(db,`newsprint/${sprintId}/taskAssignees/${taskAssigneeElement.value}/logTimeSpent`),logTimeSpent)
+  })
+
+  logTimeSpentDataArray.forEach((logTimeSpent)=>{
+    get(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}/logTimeSpent/${logTimeSpent.date}`)).then((task)=>{
+      if(task.val()["timeSpent"] < logTimeSpent.timeSpent){
+        console.log('hi')
+        set(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}/logTimeSpent/${logTimeSpent.date}`),logTimeSpent)
+      }
+    })// Setting reference, store log time spent (date and time) in the ref
+
+  })
+
+  const status = document.querySelector('input[name="status"]:checked').value
+  const taskDescription = document.querySelector("#task-description").value,
+  taskAssignee = document.querySelector("#AssigneeList").value,
+  taskPriority = document.querySelector("#priorities").value
+  const taskType = document.querySelector('input[name="category"]:checked').value
+  
+
+  if (taskDescription == ""){
+  alert("Task Description cannot be empty!")
+  }
+  else if (taskTag.length == 0){
+    alert("Task must have at least 1 tag!")
+  }
+  else{
+    get(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`)).then((task)=>{
+      if (task.val()["taskStatus"] == "Completed" && status !="Completed"){
+        update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),
+    {
+      taskAssignee :taskAssigneeElement.value,
+      taskPriority :taskPriorityElement.value,
+      taskStage : taskStageElement.value,
+      taskStoryPoints : storyPointsElement.value,
+      taskName: taskNameElement.textContent,
+      taskStatus : status,      
+      taskCategory : taskType,
+      taskDescription : taskDescriptionElement.value,
+      taskTags : taskTag,
+      accumulationOfTime: accTime.textContent,
+      dateCompleted:null
+    })
+      }
+      else if (task.val()["taskStatus"] != "Completed" && status =="Completed"){
+        const date = new Date()
+        const year = date.toLocaleString('en-GB',{year:"numeric"})
+        const month = date.toLocaleString('en-GB',{month:"2-digit"})
+        const day = date.toLocaleString('en-GB',{day:"2-digit"})
+        const monthInt = parseInt(month)
+        const dayInt = parseInt(day)
+        const dateString = [year,monthInt,dayInt].join("-")
+        console.log(dateString)
+        update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),// Update with date completed if completed
+        {
+          taskAssignee :document.querySelector("#AssigneeList").value,
+          taskPriority :document.querySelector("#priorities").value,
+          taskStage : document.querySelector("#SOT").value,
+          taskStoryPoints : document.querySelector("#storyPoints").value,
+          taskStatus : status,      
+          taskCategory : document.querySelector('input[name="category"]:checked').value,
+          taskDescription : taskDescriptionElement.value,
+          taskTags : taskTag,
+          accumulationOfTime: accTime.textContent,
+          dateCompleted: dateString
+        })
+      }
+      else{
+        update(ref(db, `newsprint/${sprintId}/selectedTasks/${taskId}`),
+    {
+      taskAssignee :taskAssigneeElement.value,
+      taskPriority :taskPriorityElement.value,
+      taskStage : taskStageElement.value,
+      taskStoryPoints : storyPointsElement.value,
+      taskName: taskNameElement.textContent,
+      taskStatus : status,      
+      taskCategory : taskType,
+      taskDescription : taskDescriptionElement.value,
+      taskTags : taskTag,
+      accumulationOfTime: accTime.textContent
+    })
+      }
+    })
+    .then(() => { window.location.href = `task.html?username=${username}&sprintId=${sprintId}&taskId=${taskId}`});
+
+  }
+})
+
+//--------------------------------------------------back button-----------------------------------------------------
+previousPage.addEventListener("click",function(){
+  window.location.href = `task.html?username=${username}&sprintId=${sprintId}&taskId=${taskId}`
+})
+deletebutton.addEventListener("click",function(){
+  remove(ref(db,`newsprint/${sprintId}/selectedTasks/${taskId}`))
+  window.location.href = `sprint.html?username=${username}&sprintId=${sprintId}`
+})
+}
+);
+
+//--------------------------------------------------priority colour-----------------------------------------------------
+const prioritiesSelect = document.getElementById("priorities");
+
+    // Function to change the color of the select element
+    function changeSelectColor() {
+      const selectedOption = prioritiesSelect.options[prioritiesSelect.selectedIndex];
+      const color = window.getComputedStyle(selectedOption).color;
+      prioritiesSelect.style.color = color;
+    }
+
+    // Add an event listener to update the select element color on change
+    prioritiesSelect.addEventListener("change", changeSelectColor);
+
+    // Call the changeSelectColor function initially to set the initial color
+    changeSelectColor();
+</script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+  const colorMappings = {
+  "green": "#85682c",
+  "yellow": "#fdf5eb",
+  "orange": "#e1af3b",
+  "red": "#9b7a26",
+  "rgb(133, 104, 44)": "green",
+  "rgb(253, 245, 235)": "yellow",
+  "rgb(225, 175, 59)": "orange",
+  "rgb(155, 122, 38)": "red"
+  };
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+      updatePriorityColor();
+    } else {
+      body.classList.remove("color-blind-friendly");
+      updatePriorityColor();
+    }
+  });
+
+  function updatePriorityColor() {
+    const priorities = document.getElementById("priorities");
+    for (let i = 0; i < priorities.options.length; i++) {
+      const option = priorities.options[i];
+      const currentColor = option.style.color;
+      if (colorMappings[currentColor]) {
+        option.style.color = colorMappings[currentColor];
+      }
+    }
+  }
+</script>
+</body>
+</html>

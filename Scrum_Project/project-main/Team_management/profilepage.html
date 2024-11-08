@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile page</title>
+<link rel="stylesheet" href="profilepage.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+
+<div class="white-frame"> 
+<div class="header-menu-container">
+<div class="menu-bar">
+<button id="menu-button"><img src="../Product_Backlog/menubar.png" width=30px height=20px></button>
+<div class="menu-items" id="menu-items">
+    <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+    <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+    <a id="teamManagement" style="cursor: pointer;">Team management</a>
+    <a id="profile" style="cursor: pointer;">Profile</a>
+    <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+    <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+</div>
+</div>
+</div>
+
+<div class="dark-blue-frame">
+    <div class="teammember">
+        Team Member
+    </div>
+    <div class="email">
+        Email
+    </div>
+    <div class="managemembers">
+        Manage members 
+    </div>
+</div>
+
+<div class="member-details">
+
+</div>
+
+<!-- <div class="details-frame">
+    <div class="name-input">
+        Alice
+    </div>
+    <div class="email-input">
+        alice@gmail.com
+    </div>
+    <div class="edit-input">
+            <a href="../Team_management/editmember.html" id="edit-button" class="edit-button">Edit</a>
+    </div>
+</div> -->
+
+<div class="button-container">
+    <a style="cursor: pointer;" id="view-button" class="view-button">View Team Contribution</a>
+    <a style="cursor: pointer;" id="create-button" class="create-button">Create New Account</a>
+    <a style="cursor: pointer;" id="delete-button" class="delete-button">Delete Existing Account</a>
+    </div>
+
+</div>
+
+
+    
+</div>
+
+<script type="module">
+//---------------------------------------- DISPLAY MEMBER DETAILS----------------------------------------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, orderByChild,update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const urlParams = new URLSearchParams(window.location.search)
+    const username = urlParams.get("username")
+    document.getElementById("view-button").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("create-button").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to add member")
+      }
+      else
+      {window.location.href= `../Team_management/addmember.html?username=${username}`}
+    })})
+    document.getElementById("delete-button").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to delete member")
+      }
+      else
+      {window.location.href= `../Team_management/deletemember.html?username=${username}`}
+    })})
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the members' profile")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+    get(ref(db,`addMember/${username}`)).then((user)=>{
+        if (!user.exists()){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["identity"] != "admin"){
+        alert("You have no access to view the members' profile")
+        window.location.href = `../Product_Backlog/prodBacklog.html?username=${username}`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+    const que = query(ref(db, "addMember/"));
+    const memberDetails = document.querySelector('.member-details');
+    const savedMemberDetails = [];
+
+    get(que).then((snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                savedMemberDetails.push(childData)
+            });
+    }}
+    )
+    .then(() => {console.log(savedMemberDetails)})
+    .then(() => {displayMemberDetail(savedMemberDetails)})
+    .catch((error) => {
+        console.error("Error getting data:", error);
+    });
+
+    // DISPLAY
+    function displayMemberDetail(memberData) {
+        memberDetails.innerHTML = "";
+        memberData.forEach(function (member, index) {
+
+            const detailsFrame = document.createElement("div");
+            detailsFrame.classList.add("details-frame");
+
+            const nameInput = document.createElement("div");
+            nameInput.classList.add("name-input");
+            nameInput.textContent = member.username;
+            detailsFrame.appendChild(nameInput);
+
+            const emailInput = document.createElement("div");
+            emailInput.classList.add("email-input");
+            emailInput.textContent = member.email;
+            detailsFrame.appendChild(emailInput);
+
+            const editInput = document.createElement("div");
+            editInput.classList.add("edit-input");
+
+            const editButton = document.createElement("a");
+            editButton.href = `../Team_management/editmember.html?username=${username}&memberId=${member.username}`;
+            editButton.id = "edit-button";
+            editButton.classList.add("edit-button");
+            editButton.textContent = "Edit";
+
+            editInput.appendChild(editButton);
+            detailsFrame.appendChild(editInput);
+            memberDetails.appendChild(detailsFrame);
+            console.log(detailsFrame);
+
+        });
+
+    return memberData;
+    }
+
+})
+</script>
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+    } else {
+      body.classList.remove("color-blind-friendly");
+    }
+  });
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

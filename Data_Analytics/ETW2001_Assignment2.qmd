@@ -1,0 +1,321 @@
+---
+title: "ETW2001_Assignment2"
+author: "Lau Jia Xuan 32203438"
+format: html
+editor: visual
+execute: 
+  warning: false
+  message: false
+---
+
+## Load necessary libraries
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(tidygeocoder)
+```
+
+## Read the three csv files
+
+There are total three csv files to read.
+
+```{r}
+locations <- read.csv("location_data.csv")
+summary(locations)
+str(locations)
+colSums(is.na(locations))
+```
+
+The location_data file is read using read.csv() function and assigned to locations. There are 185853 rows and three variables in the file which contains `Order.ID`, `Purchase.Address,` and `Product_ean`.
+
+```{r}
+products <- read.csv("product_data.csv")
+summary(products)
+str(products)
+colSums(is.na(products))
+```
+
+The product_data file is read using read.csv() function and assigned to products. There are 185950 rows and four variables in the file which contains `Order.Date`, `Order.ID`, `Product`, and `Product_ean`.
+
+```{r}
+profits <- read.csv("profit_data.csv")
+summary(profits)
+str(profits)
+colSums(is.na(profits))
+```
+
+The profit_data file is read using read.csv() function and assigned to profits. There are 185950 rows and seven variables in the file which contains `Order.ID`, `Quantity.Ordered`, `Price.Each`, `Cost.price`, `turnover`, `margin`, and `Product_ean`.
+
+## 1. **Analysis of Product Types by City in the US**
+
+**Select only the products that have purchase location details. Analyze the distribution of product types across different cities in the US. Create a suitable visualization to support your analysis and provide an interpretation of the results.**
+
+```{r}
+# create new column of row numbers
+new_products <- products %>%
+  mutate(row_n = row_number())
+
+new_locations <- locations %>%
+  mutate(row_n = row_number())
+
+new_profits <- profits %>%
+  mutate(row_n = row_number())
+```
+
+This codes above is used to add a column for each of the csv files and create a new data-frame because there are multiple same `Order.ID` in the records that might cause duplication in the result which may cause inaccuracy. Thus using another unique key when joining the data-sets can enhance the accuracy and avoid duplication of unnecessary records that affect the data analysis.
+
+```{r}
+# left join the datasets 
+products_with_locations <- left_join(new_locations, new_products, by = c("Order.ID", "Product_ean"), relationship = "many-to-many")
+
+head(products_with_locations, 10)
+```
+
+The left_join is used as only the products that have purchase location are needed, so all records in the `locations` data-set and records in `products` that matches with the `locations` records will be joined. It is joined by using `Order.ID` and `Product_ean` and the number products that contain purchase location details is 185853. The `product_with_locations` contains record of products that have location details.
+
+```{r}
+colSums(is.na(products_with_locations))
+```
+
+```{r}
+# split the address 
+products_with_locations[c('Street', 'City', 'State with ZIP_Code')] <- str_split_fixed(products_with_locations$Purchase.Address, ',', 3)
+```
+
+The code above is to split the address into different parts which are `Street`, `City`, and `State with ZIP_Code`. This will help to analyse the distribution of products across different cities in the US. It is separated by using the `,` sign.
+
+```{r}
+unique_products <- unique(products_with_locations$Product)
+unique_products
+
+unique_cities <- unique(products_with_locations$City)
+unique_cities
+```
+
+The codes above are to check the distinct values in the `Product` column and `City` to ensure that the data analysis later on can check with how many distinct values in the columns.
+
+```{r}
+# create a category based on the key words in the product name 
+products_with_locations <- products_with_locations %>%
+  mutate(Product_type = case_when(
+    grepl("Monitor", Product) ~ "Monitor",
+    grepl("Batteries", Product) ~ "Battery",
+    grepl("Headphones", Product) ~ "Headphone",
+    grepl("TV", Product) ~ "TV",
+    grepl("Phone", Product) ~ "Phone",
+    grepl("Dryer", Product) ~ "Dryer",
+    grepl("Washing Machine", Product) ~ "Washing Machine",
+    grepl("Cable", Product) ~ "Cable",
+    grepl("Laptop", Product) ~ "Laptop",
+  ))
+```
+
+To analyse the distribution of product types, mutate() has been used to create a new column `Product_type` to categorize the products based on the keywords in the product name. After reading through the product list, the keywords are finalized to ensure that it matches with all of the products. Each product will have their own category which can ease the work of data analysis.
+
+```{r}
+# count the number of each product type 
+product_counts <- products_with_locations %>%
+  group_by(City, Product_type) %>%
+  summarise(Count = n(), .groups = 'drop')
+
+head(product_counts, 10)
+```
+
+After the `Product_type` column has been created to categorize the product types, group_by has been used to group the products based on the `City` and `Product_type` and count each product type respectively into a new data-frame called `product_counts`.
+
+```{r}
+# arrange the data-frame
+product_counts <- product_counts %>%
+  arrange(desc(Count)) %>% 
+  group_by(City)
+```
+
+It is then being arrange from the largest count to smallest count of each product type and group by different cities across the US.
+
+```{r}
+# Plot the data with nine facets
+ggplot(product_counts, aes(x = Product_type, y = Count, fill = Product_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ City, scales = "free_y", ncol = 3) + 
+  labs(title = "Each Product Type by Distribution Across Cities in US", 
+       x = "City", y = "Distribution") +
+  scale_fill_brewer(palette = "Spectral") +
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+The visualization is created using ggplot() and the data is plotted using facets as each bar graph represents a city in the US and each bar is the product type.
+
+Based on the visualization plotted, it can be seen an obvious pattern in each city across the US as `Headphone` has the most distribution among all because in each city, it has the highest distribution. Then, `Battery` and `Cable` products are also higher than the rest of the product types because it is significant higher than the rest product types in each city. The product types distribution seems to be similar across all the cities because the patterns in the bar graph for each city are similar. Therefore, it can be said that `Headphone` has the most distribution in all cities followed by `Battery` and `Cable`. The products with the least distribution will be `Dryer` and `Washing Machine` as they have the smallest bars among all in the visualization above. Another interesting fact is that `San Francisco` has the most distribution on `Headphone` because from the graph, it can be seen that the y-axis is showing that is has distribution close to 12000 which is the most highest distribution among all the cities in the US.
+
+## 2. **Analysis of Product Types for Higher Quantity Orders and Survey on Electronics Usage**
+
+**Filter the dataset to include only products where the quantity ordered is greater than 1. Analyze the types of products in this subset using an appropriate visualization and interpret the results. Additionally, conduct a survey on the usage of electronics in the US using any open-source platform. Discuss potential factors contributing to the higher quantities of these products being purchased and justify your findings based on the survey outcomes.**
+
+```{r}
+# create new column 
+new_profits <- profits %>%
+  mutate(row_n = row_number())
+
+new_products <- products %>%
+  mutate(row_n = row_number())
+```
+
+To filter only products where the quantity ordered is greater than 1, joining is required to ensure that the product details in the `products` data-set is joined only if the `Order.ID` is available in the `profits` data-set. So, it can be noticed that there are two common variables which can be used as the keys to join the data-sets. However, because the decimal points in the `Product_ean` in profits is different from products. Thus, a new column which is `row_n` is created to help in joining the data-set together using unique key variables.
+
+```{r}
+# join the dataset using inner_join() 
+products_with_profits <- new_profits %>%
+  inner_join(new_products, by = c("Order.ID", "row_n"))
+
+colSums(is.na(products_with_profits))
+```
+
+An inner_join is used in this case because since the records in profits and products should be the same, so it should match exactly based on their `Order.ID`. However, there are multiple `Order.ID` being used in the records which creates duplication that can affect the accuracy of data analysis, the `row_n` that was created will be used as one of the key variables to join the two data-sets so that each row is match from both data-sets. After joining using inner_join(), the products_with_profits should have 185950 rows and containing details from both data-sets.
+
+```{r}
+# filter only contain quantity more than one 
+quantity_more_than_1 <- products_with_profits %>% 
+  filter(Quantity.Ordered > 1) 
+nrow(quantity_more_than_1)
+head(quantity_more_than_1, 10)
+```
+
+After the data-sets have been joined into one data-set, it is time to filter the products that contain more than 1 quantity ordered which is required by the question. So, filter() is being applied to filter only contain the products that have more than 1 quantity ordered in the records. Now there are 17398 records in the `quantity_more_than_1` data-frame and these products contain more than one quantity ordered.
+
+```{r}
+# categorize using the key words that might contain the product name
+products_types <- quantity_more_than_1 %>%
+  mutate(Product_type = case_when(
+    grepl("Monitor", Product) ~ "Monitor",
+    grepl("Batteries", Product) ~ "Battery",
+    grepl("Headphones", Product) ~ "Headphone",
+    grepl("TV", Product) ~ "TV",
+    grepl("Phone", Product) ~ "Phone",
+    grepl("Dryer", Product) ~ "Dryer",
+    grepl("Washing Machine", Product) ~ "Washing Machine",
+    grepl("Cable", Product) ~ "Cable",
+    grepl("Laptop", Product) ~ "Laptop",
+  )) %>% 
+  group_by(Product_type) %>%
+  summarise(Count = n(), .groups = 'drop')
+products_types
+```
+
+To find out the product types, mutate() is used similar to the previous approach by categorize the products into 9 different categories based on the key words occur in the product names. After the product types have been created and finalized, it is then grouped by the product types and conduct a count to count the total product in each product type.
+
+```{r}
+# calculate the percentage 
+products_types$Percentage <- products_types$Count / sum(products_types$Count) * 100
+```
+
+To make the visualization understandable, the total count has been converted to percentage so that its distribution is more obvious to spot.
+
+```{r}
+# plot the bar graph 
+quantity_graph <- ggplot(products_types, aes(x = reorder(Product_type, -Percentage), y = Percentage, fill = Product_type)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Products Ordered More Than 1 Quantity", x = "Product Type", y = "Percentage") +
+  scale_fill_brewer(palette = "Pastel1") +
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        axis.text.x = element_text(angle = 45, hjust = 1)) 
+  
+quantity_graph
+```
+
+The bar graph above is plotted using ggplot and each bar represents the product type. There are seven product types are being ordered more than once in an order which indicated in the `Quantity.Ordered` column. Based on the visualization above, it can be seen that `Battery` is ranked the first of having more than one quantity in the order. This indicates that in one order, people tends to order more of the battery products compared to the other product types. Then `Cable` and `Headphone` are also being ordered more than one quantity in an order because the bars shown in the visualization are also higher than the other four product types. These three products have more quantities in the orders compared to other product types which can rarely be seen in the visualization above. It also tells that there are more orders of `Battery` being ordered more than one quantity.
+
+![](images/Screenshot%202024-09-21%20at%209.09.13%20PM.png)
+
+The graph attached is from the article itself which shows the ranking of the popular electronic devices from Oberlo (2024) . There are few websites and articles have been used to conduct a survey on the usage of electronics in the US which are in-text cited as well as cited at the end of the document. The most usage electronics in the US would be smartphones, laptops or desktops, and tablets. These are the top three most popular devices in the US and it can be seen in the article that most of the popular electronics require a Cable to charge or a Headphone to pair to enhance the experience. Sometimes, electronics like TV streaming devices often need batteries to operate their remote control.
+
+Based on The evolution and impact of AA and AAA Batteries: A brief history (TheInforPort, 2023), the quantity of `Battery` is higher being purchased because most of the electronic devices required a battery to work in our daily lives. For instance, popular electronics like remote control of a TV streaming device requires batteries to restore its functionality. Clocks and alarms that are used in our lives also need batteries to operate and many more items that we use everyday require batteries. Therefore, the quantity of `Battery` is highly purchased by people in the US because they are also using these products that require batteries to operate. Another potential factors that increases the quantity of purchase on `Battery` is that there are more technological advancements and it is more dependable for emergency equipment that requires batteries to operate and stay charge during extended storage time (Raje, 2024) . Thus, people tends to buy it to ensure that their equipment at home or anywhere would work at any time. These are the reasons why batteries are highly purchase with many quantities compared to other product types.
+
+With more usage on smart devices, there are a high demand of cable required by the people because they want to longer battery duration with their devices (O’Donnell, 2024). Thus, charging products like `Cable` is highly needed from the people which made it the factor that increases the quantity of purchased. One of the potential factors is also because the high amount of people using smart devices that require charging cables like lightning and type-c cables to charge their devices. Devices from Apple are also changing its charging port to type-c cables which increases the purchasing quantity of cables as devices need cables to charge (Insider, 2022). Smartphones, laptops, and tablets are also having the most usage in the US which require the people to purchase more of the cables to charge their devices. The more the usage they have, the more cables they need because they can charge the devices simultaneously and different devices sometimes require different type of cables and that is why the quantity of the `Cable` is high. So, these are the reasons why it has higher quantity of purchase on `Cable` due to the increase of uses on smart devices that need cables to charge.
+
+Products like headphones or earbuds are also highly rated nowadays in the US because the user now focuses on enhancing the experience of using smart devices (O’Donnell, 2024). Due to innovations of audio quality, it can be seen that it has boost the popularity of the audio products like headphones and earbuds. Based on U.S. Mobile Accessories Market Size \| Industry Report, 2030 (n.d.), It is obvious that users nowadays focus on wireless connectivity due to more convenient uses. Functionalities like noise cancelling and advanced sound quality are also one of the factors that attracts the people in the US to purchase this product type more than other types. As it is also convenient to use a headphone while using phone like watching videos or listening to songs and because the products that have the most usage like smartphones and laptops sometimes need a `Headphone` product to pair and enhance the audio experience. Therefore, these are the potential reasons why people buy so much of `Headphones` compared to the other product types.
+
+The other four product types are also appearing in the graph founded which tells that these have more usage in the US.
+
+## 3. **Turnover Analysis of Different Product Types in 2019**
+
+**Create a new data frame containing the columns: Order Date, Product EAN, Product Name, and Turnover. Analyze the turnover of different product types from January to December 2019 using an appropriate visualization. Interpret the results of your analysis.**
+
+```{r}
+# join the data-sets using inner_join and select required columns 
+new_data <- inner_join(new_profits, new_products, by = c("Order.ID", "row_n")) %>%
+  select(Order.Date, Product_ean.y, Product, turnover)
+```
+
+To create a new data-frame that contains `Order.Date`, `Product_ean`, `Product`, and `turnover`, an inner_join() is used to join both `new_profits` and `new_products` that contain these variables. Then select() is applied to only select the four variables that are required into the new data-frame.
+
+```{r}
+# categorise the product types
+turnover_month <- new_data %>%
+  mutate(Product_type = case_when(
+    grepl("Monitor", Product) ~ "Monitor",
+    grepl("Batteries", Product) ~ "Battery",
+    grepl("Headphones", Product) ~ "Headphone",
+    grepl("TV", Product) ~ "TV",
+    grepl("Phone", Product) ~ "Phone",
+    grepl("Dryer", Product) ~ "Dryer",
+    grepl("Washing Machine", Product) ~ "Washing Machine",
+    grepl("Cable", Product) ~ "Cable",
+    grepl("Laptop", Product) ~ "Laptop",
+  ))
+```
+
+Same as previous approach, the code above is to categorize the products into different product types using the key words in the product names. Then, it is assigned to a new data-frame called `turnover_month`.
+
+```{r}
+# change the format of the Order.Date
+turnover_month$Order.Date <- format(as.Date(turnover_month$Order.Date, format="%d/%m/%Y"),"%m")
+```
+
+To analyse the turnover over months in 2019, the format of the `Order.Date` has been changed to only contain the month so that it can be analysed in detailed.
+
+```{r}
+# calculate the sum of turnover 
+turnover_month <- turnover_month %>%
+  group_by(Order.Date, Product_type) %>%
+  summarise(total_turnover = sum(turnover), .groups = 'drop')
+```
+
+The codes above is used to group based on the months and product types, then calculate the total turnover for each product type in each month.
+
+```{r}
+# plot the line graph 
+ggplot(turnover_month, aes(x = Order.Date, y = total_turnover, color = Product_type, group = Product_type)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  labs(title = "Monthly Turnover by Product Type in 2019",
+       x = "Month",
+       y = "Total Turnover") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+A line graph is plotted using ggplot() because as the analysis focuses over months, therefore a line graph is more suitable to visualize the trends of the products types over the months in 2019. Each line represents a product type while the y-axis represents the total turnover of each product type in each month.
+
+Based on the visualization above, it can clearly be seen that the product that has the most turnover in overall is Laptop because the line starts from a higher point to exceeding 1500000 in total. This shows that `Laptop` sold the fastest in December. Then it is followed by `Phone` and `Monitor`. These three product types are the top three product types that have the higher turnover compared to the other product types over the months. Not only that, Most of the products have a high peak month that has the most turnover in 2019. For instance, `Laptop` has the highest turnover in December and same goes to product like `Headphone`. In September, the turnover also declined for most of the product types that can be seen from the visualization above; the line starts to travel downwards. It also increased during October and decreased again in November for most of the product types. From January to April, the turnovers for the five products like `Laptop`, `Phone`, `Monitor`, `Headphone`, and `TV` have been increasing every month until April. This indicates that these product types sell quicker and quicker over time. Except the five product types that can clearly be seen, the rest of the product types are not having much difference or rather little and lower changes in the turnover from January to December in 2019.
+
+## References
+
+Insider, G. (2022, January 11). *Different types of charging cables for Apple and Android*. GHOSTEK. https://ghostek.com/blogs/ghostek-insider/different-types-of-charging-cables-for-apple-and-android?srsltid=AfmBOorvTwJ9MjsXW7BZ7i_nHPcKZli8X7wbv4BaK5rEffT8BFHkVzO-
+
+*Most popular devices in the US \[updated Mar 2024\]*. Oberlo. (2024, May 2). https://www.oberlo.com/statistics/most-popular-devices
+
+O’Donnell, F. (2024b, September 12). *US smartphones and Accessories Market Report 2023 - trends*. Mintel Store. https://store.mintel.com/report/us-smartphones-market-report-2023
+
+Raje, K. (2024, May 3). *AAA batteries market is growing at compound annual growth rate (CAGR) of 5.9% from 2023 to 2030!*. Cognitive Market Research. https://www.cognitivemarketresearch.com/aaa-batteries-market-report
+
+*The evolution and impact of AA and AAA Batteries: A brief history*. TheInfoPort. (2023, April 8). https://blog.theinfoport.com/en/history-of-batteries/
+
+*U.S. mobile accessories market size: Industry Report, 2030*. U.S. Mobile Accessories Market Size \| Industry Report, 2030. (n.d.). https://www.grandviewresearch.com/industry-analysis/us-mobile-accessories-market-report#:\~:text=The%20U.S.%20mobile%20accessories%20market,the%20widespread%20adoption%20of%20smartphones.

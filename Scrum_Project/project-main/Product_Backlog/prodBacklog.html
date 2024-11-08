@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Backlog</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+  <div class="white-frame">
+
+    <div class="header-menu-container">
+      <div class="menu-bar">
+        <button id="menu-button"><img src="menubar.png" width="45%" height="45%"></button>
+        <div class="menu-items" id="menu-items">
+            <a id="prodBacklog" style="cursor: pointer;">Product backlog</a>
+            <a id="scrumboard" style="cursor: pointer;">Scrumboard</a>
+            <a id="teamManagement" style="cursor: pointer;">Team management</a>
+            <a id="profile" style="cursor: pointer;">Profile</a>
+            <a id="resetpassword" style="cursor: pointer;">Reset password</a>
+            <a id="LogOutButton" style="cursor: pointer;">Log out</a>
+        </div>
+      </div>
+      
+      <header>
+        <h1>Product Backlog</h1>
+      </header>
+
+      
+    </div>
+    
+    <br>
+    <main id="main" class="flex row">
+    <div class="card-views" id="card-views-container">
+    
+      <!-- <div class="cardview" id="task1">
+        <a href="task.html">
+          <div class="task-name">Task 1</div>
+          <div class="priority">Priority: High</div>
+          <div class="story-points">Story Points: 5</div>
+          <div class="tags-container">
+            <div class="tags tags1"></div>
+            <div class="tags tags2"></div>
+            <div class="tags tags5"></div>
+            <div class="tags tags3"></div>
+            <div class="tags tags8"></div>
+          </div>
+
+          <label class="custom-checkbox hidden-checkbox">
+            <input type="checkbox" class="delete-checkbox">
+            <span class="checkmark"></span>
+          </label>
+
+        </a>
+    
+      </div>
+      
+      <div class="cardview",id="task2" >
+        <a href="task.html">
+          <div class="task-name">Task 2</div>
+          <div class="priority">Priority: Low</div>
+          <div class="story-points">Story Points: 7</div>
+          <div class="tags-container">
+            <div class="tags tags8"></div>
+            <div class="tags tags6"></div>
+          </div>
+
+          <label class="custom-checkbox hidden-checkbox">
+            <input type="checkbox" class="delete-checkbox">
+            <span class="checkmark"></span>
+          </label>
+        </a>
+      </div>
+
+      <div class="cardview",id="task4" >
+        <a href="task.html">
+          <div class="task-name">Task 4</div>
+          <div class="priority">Priority: Medium</div>
+          <div class="story-points">Story Points: 7</div>
+          <div class="tags-container">
+            <div class="tags tags8"></div>
+            <div class="tags tags6"></div>
+          </div>
+
+          <label class="custom-checkbox hidden-checkbox">
+            <input type="checkbox" class="delete-checkbox">
+            <span class="checkmark"></span>
+          </label>
+        </a>
+      </div> -->
+
+    </div>
+
+    <sideBar id="sideBar" class="flex col">
+      <div class="sort-container">
+        <button class="sort">Sort</button>
+        <button class="sort1" id="Newest-To-Oldest" value="Newest-To-Oldest">Newest to Oldest</button>
+        <button class="sort2" id="Oldest-To-Newest" value="Oldest-To-Newest">Oldest to Newest</button>
+        <button class="sort3" id="Low-To-Urgent" value="Low-To-Urgent">Low to Urgent</button>
+        <button class="sort4" id="Urgent-To-Low" value="Urgent-To-Low">Urgent to Low</button>
+      </div>
+
+      <div class = "tag-container">
+        <button class="tag">Tag</button>
+        <label class="tag1" for="FE"><input type="checkbox" id="FE" name="tag" value="Frontend">Frontend</label>
+        <label class="tag2" for="BE"><input type="checkbox" id="BE" name="tag" value="Backend">Backend</label>
+        <label class="tag3" for="API"><input type="checkbox" id="API" name="tag" value="API">API</label>
+        <label class="tag4" for="DB"><input type="checkbox" id="DB" name="tag" value="Database">Database</label>
+        <label class="tag5" for="FW"><input type="checkbox" id="FW" name="tag" value="Framework">Framework</label>
+        <label class="tag6" for="TEST"><input type="checkbox" id="TEST" name="tag" value="Testing">Testing</label>
+        <label class="tag7" for="UI"><input type="checkbox" id="UI" name="tag" value="UI">UI</label>
+        <label class="tag8" for="UX"><input type="checkbox" id="UX" name="tag" value="UX">UX</label>
+      </div>
+    </sideBar>
+    </main>
+     
+      <br>
+
+      <div class="button-container">
+        <a id="add-button" class="add-button">Add</a>
+        <div id="delete-button" class="delete-button">Delete</div>        
+      </div>
+  </div>
+
+
+  </script>
+  <script type="module">
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, orderByChild,update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+
+// taskManager.js for productBacklog.html
+const addTaskButton = document.getElementById("add-button");
+const taskList = document.getElementById("card-views-container");
+const NewToOld = document.getElementById("Newest-To-Oldest")
+const OldToNew = document.getElementById("Oldest-To-Newest")
+const UrgentToLow = document.getElementById("Urgent-To-Low")
+const LowToUrgent = document.getElementById("Low-To-Urgent")
+const savedTasks = [];
+const originalTasks = [];
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+    const urlParams = new URLSearchParams(window.location.search)
+    const username = urlParams.get("username")
+    document.getElementById("prodBacklog").addEventListener("click",function(){
+      window.location.href= `../Product_Backlog/prodBacklog.html?username=${username}`})
+    
+    document.getElementById("scrumboard").addEventListener("click",function(){
+      window.location.href= `../Sprint_Backlog/scrumboard.html?username=${username}`})
+    
+    document.getElementById("teamManagement").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/contributionchart.html?username=${username}`}
+    })})
+    document.getElementById("profile").addEventListener("click",function(){
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+      if (user.val()["identity"] != "admin")
+      {
+        alert("You don't have the access to view the Team_Management")
+      }
+      else
+      {window.location.href= `../Team_management/profilepage.html?username=${username}`}})})
+    document.getElementById("resetpassword").addEventListener("click",function(){
+      window.location.href= `../Team_management/resetpassword.html?username=${username}`})
+    
+      get(ref(db,`addMember/${username}`)).then((user)=>{
+    if (!user.exists()){
+        window.location.href = `../Login/login.html`
+    }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+    })
+    document.getElementById("LogOutButton").addEventListener("click",function(){
+      update((ref(db,`addMember/${username}`)),{
+        status: "Log out"
+      })
+      window.location.href = `../Login/login.html`
+    })
+    const que = query(ref(db, "productBacklog/"), orderByChild("dateAdded"));
+    get(que).then((snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+                const childData = childSnapshot.val();
+                savedTasks.push(childData)
+                originalTasks.push(childData)
+            });
+    }}
+    
+    )
+    .then(() => {console.log(savedTasks)})
+    .then(() => displayTasks(savedTasks))
+    .catch((error) => {
+        console.error("Error getting data:", error);
+    });
+    console.log(savedTasks)
+    // ADD
+    if (addTaskButton !== null){    
+        addTaskButton.addEventListener("click", function () {
+          
+        window.location.href = `addtask.html?username=${username}`; 
+    });
+}
+    })
+
+    // DISPLAY
+    function displayTasks(taskData) {
+        if (taskList !== null){
+            taskList.innerHTML = "";
+            taskData.forEach(function (task, index) {
+    
+                const taskCard = document.createElement("div");
+                taskCard.classList.add("cardview");
+                taskCard.id = `${index}`;
+    
+    
+                const taskName = document.createElement("div");
+                taskName.className = "task-name";
+                taskName.textContent = task.taskName;
+                
+                const prioritytitle = document.createElement("span");
+                prioritytitle.className = "priority-title";
+                prioritytitle.textContent = "Priority: "
+                const priority = document.createElement("span");
+                priority.className = "priority";
+                if (task["taskPriority"] == "Low"){
+                  priority.style.color = "green";
+                }
+                else if (task["taskPriority"] == "Medium"){
+                  priority.style.color = "yellow"
+                }
+                else if (task["taskPriority"] == "Important"){
+                  priority.style.color = "orange"
+                }
+                else if (task["taskPriority"] == "Urgent"){
+                  priority.style.color = "red"
+                }
+                priority.textContent = task.taskPriority;
+                const taskPriorityElement = document.createElement("div");
+                taskPriorityElement.className="priority-element";
+                taskPriorityElement.appendChild(prioritytitle)
+                taskPriorityElement.appendChild(priority)
+    
+    
+                const storyPoints = document.createElement("div");
+                storyPoints.className = "story-points";
+                storyPoints.textContent = `Story Points: ${task.taskStoryPoints}`;
+
+
+                // testing displaying tags
+                // const tags = document.createElement("div");
+                // tags.className = "tags";
+                // tags.textContent = `Tags: ${task.taskTags}`;
+
+                const tagsPair = ['Frontend','Backend', 'API','Database','Framework','Testing','UI','UX']
+                const tagsContainer = document.createElement("div");
+                tagsContainer.className = "tags-container";
+                if (typeof(task.taskTags) !== "undefined"){
+                    task.taskTags.forEach((tag) => {
+                        if (tagsPair.includes(tag)){
+                            const tagElement = document.createElement("div");
+                            tagElement.classList.add("tags",`tags${tagsPair.indexOf(tag)+1}`);
+                            tagsContainer.appendChild(tagElement);
+                        }
+                    });   
+                }
+
+                const deletecheckbox = document.createElement("label")
+                deletecheckbox.classList.add("custom-checkbox")
+                deletecheckbox.classList.add("hidden-checkbox")
+                const checkboxinput = document.createElement("input")
+                checkboxinput.classList.add("delete-checkbox")
+                checkboxinput.type = "checkbox"
+                const checkmark = document.createElement("span")
+                checkmark.classList.add("checkmark")
+                deletecheckbox.appendChild(checkboxinput)
+                deletecheckbox.appendChild(checkmark)
+    
+                taskCard.appendChild(taskName)
+                taskCard.appendChild(taskPriorityElement)
+                taskCard.appendChild(storyPoints)
+                taskCard.appendChild(tagsContainer)
+                taskCard.appendChild(deletecheckbox)
+                taskCard.addEventListener("click",function (){
+                  const urlParams = new URLSearchParams(window.location.search)
+                  const username = urlParams.get("username")
+                window.location.href = `task.html?username=${username}&taskId=${taskName.textContent}`})
+                taskList.appendChild(taskCard);
+                console.log(taskList)    
+            });
+        }
+        return taskData;
+    }
+
+
+
+
+
+
+    // SORTING
+    const displayPriority = {
+        "Low":1,
+        "Medium":2,
+        "Important":3,
+        "Urgent":4
+    }
+
+    if (NewToOld !== null && OldToNew !== null && UrgentToLow !== null && LowToUrgent !== null){
+    NewToOld.addEventListener("click",function(){
+        savedTasks.sort((a, b) => {
+            const dateA = new Date(a.dateAdded);
+            const dateB = new Date(b.dateAdded);
+            return dateB - dateA;
+        });
+        displayTasks(savedTasks)
+        savedTasks.reverse()
+    })
+    OldToNew.addEventListener("click",function(){
+        originalTasks.sort((a, b) => {
+            const dateA = new Date(a.dateAdded);
+            const dateB = new Date(b.dateAdded);
+            return dateA - dateB;
+        });
+        displayTasks(originalTasks)
+    })
+
+    UrgentToLow.addEventListener("click",function(){
+        const newTaskArray = savedTasks.sort((a,b)=>{
+            const priorityA = displayPriority[a.taskPriority]
+            const priorityB = displayPriority[b.taskPriority]
+            return priorityB - priorityA
+        })
+        displayTasks(newTaskArray)
+    })
+    LowToUrgent.addEventListener("click",function(){
+        const newTaskArray = savedTasks.sort((a,b)=>{
+            const priorityA = displayPriority[a.taskPriority]
+            const priorityB = displayPriority[b.taskPriority]
+            return priorityA - priorityB
+        })
+        displayTasks(newTaskArray)
+    })
+};
+
+// export const displayedTasks = displayTasks(savedTasks);
+//erferferferfefeferferfewrfeferf
+
+  </script>
+  <script src="filter.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, orderByChild,remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+const firebaseConfig2 = {
+    apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+    authDomain: "project-2782373696466964042.firebaseapp.com",
+    databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "project-2782373696466964042",
+    storageBucket: "project-2782373696466964042.appspot.com",
+    messagingSenderId: "971400388443",
+    appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+};
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteButton = document.getElementById("delete-button");
+    var display = false;
+    const app = initializeApp(firebaseConfig2);
+
+    const db = getDatabase(app);
+    deleteButton.addEventListener("click", function (e) {
+      const checkboxes = document.querySelectorAll(".custom-checkbox");
+      e.preventDefault(); // Prevent the default behavior of the anchor tag
+      if (display==false){
+      checkboxes.forEach(function (checkbox) {
+        checkbox.style.display = "block"; // Set display to "block" to show the checkboxes
+      });
+    display = true  
+    }
+      else {
+        checkboxes.forEach(function (checkbox) {
+          checkbox.style.display = "none"
+      })
+    display = false
+  }
+
+  
+      // Add a click event listener to the "Delete" button on the task cards
+      checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("click", function (e) {
+          e.stopPropagation(); // Prevent card click event from firing
+  
+          // Check if the checkbox is checked
+          if (checkbox.querySelector("input[type='checkbox']").checked) {
+            // Remove the task card
+            const taskCard = checkbox.closest(".cardview");
+            if (taskCard) {
+              const taskName = taskCard.children[0].textContent;
+              console.log(taskName)
+              const taskToRemove = ref(db,`productBacklog/${taskName}`);
+              remove(taskToRemove)
+              taskCard.remove()
+            }
+          }
+        });
+      });
+    });
+  });
+  </script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+  const colorMappings = {
+  "green": "#85682c",
+  "yellow": "#fdf5eb",
+  "orange": "#e1af3b",
+  "red": "#9b7a26",
+  "rgb(133, 104, 44)": "green",
+  "rgb(253, 245, 235)": "yellow",
+  "rgb(225, 175, 59)": "orange",
+  "rgb(155, 122, 38)": "red"
+  };
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+      updatePriorityColor();
+    } else {
+      body.classList.remove("color-blind-friendly");
+      updatePriorityColor();
+    }
+  });
+
+  function updatePriorityColor() {
+    const taskCards = document.querySelectorAll(".cardview");
+    taskCards.forEach(function (taskCard) {
+      const priorityElement = taskCard.querySelector(".priority");
+      const currentColor = priorityElement.style.color;
+      if (colorMappings[currentColor]) {
+        priorityElement.style.color = colorMappings[currentColor];
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
+
+

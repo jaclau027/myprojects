@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit member</title>
+  <link rel="stylesheet" href="editmember.css">
+</head>
+<body>
+<div class="onoffbutton">
+<label class="switch">
+  <input type="checkbox" id="toggleButton">
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="white-frame">
+    <div class="light-blue-frame">
+        <header>
+            <h1>Editing Existing User</h1>
+            </header>
+            <div class="inputsection">
+            <label for="username">Edit your username here</label>
+            <input type="text" id="username" name="username" style="text-align: center;">
+            <br>
+            <label for="email">Edit your email here</label>
+            <input type="text" id="email" name="email" style="text-align: center;">
+            <br>
+            <label for="password">Edit your password here</label>
+            <input type="password" id="password" name="password" style="text-align: center;">
+        </div>
+            <br>
+        <div class="button-container">
+            <a style="cursor: pointer;" id="confirm-button" class="confirm-button">Confirm</a>
+            <a style="cursor: pointer;" id="cancel-button" class="cancel-button">Cancel</a>
+        </div>
+    </div>
+</div>
+
+<script type="module"> 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, query, update,remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const firebaseConfig = {
+        apiKey: "AIzaSyAk2H_8opCo31ebK1Ce_hZ5G36XNkydR1s",
+        authDomain: "project-2782373696466964042.firebaseapp.com",
+        databaseURL: "https://project-2782373696466964042-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "project-2782373696466964042",
+        storageBucket: "project-2782373696466964042.appspot.com",
+        messagingSenderId: "971400388443",
+        appId: "1:971400388443:web:fc495758d4109f4a1f847e"
+    };
+  
+    const 
+      username = document.getElementById("username"),
+      email = document.getElementById("email"),
+      password = document.getElementById("password"),
+  
+      urlParams = new URLSearchParams(window.location.search),
+      usernameUrl = urlParams.get("username"),
+      memberId = urlParams.get("memberId")
+  
+    document.addEventListener("DOMContentLoaded",function(){
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      get(ref(db,`addMember/${usernameUrl}`)).then((user)=>{
+        if (!user.exists()){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["status"] != "Log in"){
+        window.location.href = `../Login/login.html`
+      }
+      else if (user.val()["identity"] != "admin"){
+        alert("You have no access to edit the members")
+        window.location.href = `../Product_Backlog/prodBacklog.html?username=${usernameUrl}`
+      }
+    })
+
+  
+      const dataRef = ref(db, `addMember/` + memberId);
+      const savedTasks = []
+      var task = {}
+  
+      get(dataRef).then((snapshot) => {
+          if (snapshot.exists()) {
+              console.log(snapshot.val())
+              console.log(Object.keys(snapshot.val()))
+              const data = snapshot.val()
+              task = data
+              console.log(task)
+              snapshot.forEach((childSnapshot) => {
+                  const childData = childSnapshot.val();
+                  savedTasks.push(childData)
+              });
+      }}
+      )
+      .then(()=> displayTaskDetails(task));
+  
+      //----------------------------------------------display task detail------------------------------------------------------------------
+      function displayTaskDetails(savedTasks){
+          // if (taskId !== null && taskId.length >= 0) {
+              const task = {
+                  "email": savedTasks["email"],
+                  "password": savedTasks["password"],
+                  "username": savedTasks["username"],
+              } 
+              email.value = task["email"];
+              password.value = task["password"];
+              username.value = task["username"];
+              
+          // } else {
+          //     taskNameElement.textContent = "Member not found.";
+          // }
+      }
+  
+    // ------------------------------------------- Confirm button------------------------------------------------------------------
+  
+      document.getElementById("confirm-button").addEventListener('click', function(e){
+  
+          e.preventDefault(); // Not sure if need this line yet
+          function isValidEmail(email) {
+            const emailPattern = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/ 
+            const bool = emailPattern.test(email.value)
+            console.log(bool)
+            // Regular expression pattern for a valid email address
+            if (bool){
+              return true
+            }
+            else {
+              alert("Invalid Email Address")
+              return false
+            }
+          }
+          const valid_email = isValidEmail(email)
+          if(username.value !== "" && password.value !== ""){
+            if (valid_email){
+              if (memberId != username.value){
+                const details = {}
+              get(ref(db,'addMember/' + memberId)).then((user)=>{
+                const identity = user.val()["identity"]
+                const status = user.val()["status"]
+                details["identity"] = identity
+                details["status"] = status
+              }).then(()=>{
+                set(ref(db, 'addMember/' + username.value), // testing with a specific username
+          {
+            username : username.value,
+            email : email.value,
+            password : password.value,
+            identity : `${details.identity}`,
+            status : `${details.status}`
+          })
+          .then(remove(ref(db, 'addMember/' + memberId)))
+          .then(() => {
+              alert(' Member details have been updated. ')
+              if (memberId == usernameUrl){
+          window.location.href = `profilepage.html?username=${username.value}`
+        }
+        else {
+          window.location.href = `profilepage.html?username=${usernameUrl}`
+        }
+            })
+              })
+              console.log(details)
+          
+              }
+          else {
+            update(ref(db, 'addMember/' + username.value),{
+              email : email.value,
+              password : password.value
+            }).then(()=>{
+              alert(' Member details have been updated. ')
+              if (memberId == usernameUrl){
+          window.location.href = `profilepage.html?username=${username.value}`
+        }
+        else {
+          window.location.href = `profilepage.html?username=${usernameUrl}`
+        }
+            })
+          }
+      }}
+           else{
+          alert("Please fill in all the member's details.");
+        }
+    })
+  
+    // ------------------------------------------- Cancel button------------------------------------------------------------------
+  
+    document.getElementById("cancel-button").addEventListener('click', function(e){
+        window.location.href = `profilepage.html?username=${usernameUrl}`;
+      }) 
+  
+    })</script>
+
+<script>
+  const toggleButton = document.getElementById("toggleButton");
+  const body = document.body;
+
+  toggleButton.addEventListener("change", function() {
+    if (toggleButton.checked) {
+      body.classList.add("color-blind-friendly");
+    } else {
+      body.classList.remove("color-blind-friendly");
+    }
+  });
+</script>
+</body>
+</html>

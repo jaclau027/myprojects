@@ -1,0 +1,408 @@
+body {
+    background-color: #A8CAEA;
+    padding: 20px;
+    }
+    
+    .color-blind-friendly {
+      background-color: #DCD6F1; /* Change background color to white */
+      color: #000000; /* Change text color to black */
+    }
+    .white-frame{
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    }
+    
+    
+    .light-blue-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+    }
+    
+    
+    .light-blue-card-frame {
+    background-color: #C5DBF5;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+    }
+    
+    
+    .dark-blue-frame {
+    background-color: #1f4b72;
+    padding: 20px;
+    margin: 10px;
+    }
+
+    .pink-frame {
+    background-color: #E8CACA;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    }
+
+    .green-frame {
+    background-color: #b5dbaf;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    }
+
+    .color-blind-friendly .dark-blue-frame {
+      background-color: #7d82a8;
+    }
+    
+    .flex {
+    display: flex;
+    }
+    .row {
+    flex-direction: row;
+    }
+    .col {
+    flex-direction: column;
+    }
+    
+    
+    .vertical-scroll {
+    display: inline-flex;
+    gap: 10px;
+    }
+    
+    
+    
+    
+    .card-views {
+    display: grid;
+    gap: 10px;
+    }
+    
+    
+    .previous-page {
+    position: relative;
+    display: inline;
+    width: 5%;
+    padding: 3px;
+    top: 5px;
+    }
+    
+    
+    .header-menu-container {
+    display: flex;
+    align-items: center;
+    }
+    header {
+    margin-left: 40px;
+    }
+    
+    
+    
+    
+    .button-container {
+    text-align: right;
+    margin-top: 5px;
+    }
+    
+    
+    .add-button {
+    background-color: darkblue;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 19px;
+    margin: 5px;
+    width: 100%;
+    text-align: center;
+    line-height: center;
+    margin-left: auto;
+    display: block;
+    }
+    
+    .color-blind-friendly .add-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    
+    .menu-bar {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+    padding: 3px;
+    z-index: 2;
+    }
+    
+    
+    
+    
+    .previous-page {
+    padding: 10px;
+    }
+    
+    
+    
+    
+    .previous-page a {
+    background-color: none;
+    color: none;
+    border:none;
+    cursor: pointer;
+    position: inline;
+    }
+    
+    
+    
+    
+    .menu-bar button {
+    background-color: gray;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    }
+    .color-blind-friendly .menu-bar button {
+      background-color: #887c80; 
+      color: #ffffff; 
+    }
+    
+    .menu-items {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    padding: 5px;
+    }
+    .color-blind-friendly .menu-items {
+      background-color: #887c80; 
+      color: #ffffff; 
+    }
+    
+    .menu-items a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+    }
+    
+    
+    .menu-bar:hover .menu-items {
+    display: block;
+    }
+    
+    
+    
+    
+    .card {
+    position: relative;
+    border: 1px solid #E3F6FC;
+    padding: 10px;
+    margin: 10px;
+    }
+    .cardview {
+    background-color: #E3F6FC;
+    border: 1px solid #E3F6FC;
+    padding: 100px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+    margin-bottom: 10px;
+    }
+    
+    .color-blind-friendly .card {
+      background-color: #fceefa;
+    }
+    .color-blind-friendly .cardview {
+      background-color: #fceefa;
+    }
+    .cardview a {
+    text-decoration: none;
+    color: black;
+    }
+    
+    
+    .task-name {
+    font-size: 20px;
+    font-weight: bold;
+    }
+
+
+    .teammember {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding-left: 100px;
+        padding-right: 100px;
+        display: inline-flex;
+    }
+
+    .email {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding-left: 250px;
+        padding-right: 100px;
+        display: inline-flex;
+    }
+    
+    .managemembers {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding-left: 280px;
+        padding-right: 50px;
+        display: inline-block;
+    }
+    
+    .button-container {
+        text-align: right; 
+        margin-top: 5px; 
+      }
+      
+    .view-button, .create-button, .delete-button {
+        background-color: darkblue;
+        color: white;
+        text-decoration: none;
+        padding: 5px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+        width: 180px;
+        text-align: center;
+        line-height: center; 
+        margin-left: auto;
+        display: block;
+    }
+
+    .color-blind-friendly .view-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    .color-blind-friendly .create-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    
+    .color-blind-friendly .delete-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    
+
+    .details-frame {
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 19px;
+        margin: 5px;
+        width: 98%;
+        line-height: center;
+        margin-right: auto;
+        display: block;
+    }
+
+
+    .name-input {
+        width: 400px;
+        font-size: 20px;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .email-input {
+        font-size: 20px;
+        text-align: center;
+        display: inline-block;
+        width: 500px;
+    }
+    
+    .edit-input {
+
+        font-size: 20px;
+        display: inline-block;
+        padding-left: 180px;
+        text-align: center;
+    }
+
+    .edit-button {
+        background-color: darkblue;
+        color: white;
+        text-decoration: none;
+        padding: 5px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+        width: 40px;
+        text-align: center;
+        line-height: center; 
+        margin-left: auto;
+        display: block;
+    }
+    .color-blind-friendly .edit-button{
+      background-color: #0e2a45;
+      color: white;
+    }
+    
+        /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .onoffbutton {
+    text-align: right;
+    display: block;
+  }
